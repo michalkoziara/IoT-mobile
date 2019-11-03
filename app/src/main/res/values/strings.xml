@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">IoT-mobile</string>
+
+    <string name="create_account_link">Nie masz konta? Stwórz nowe</string>
+    <string name="log_in_link">Masz już konto? Zaloguj się</string>
+
+    <string name="login_button_text">Zaloguj się</string>
+    <string name="create_account_button_text">Stwórz konto</string>
+
+    <string name="password_hint">Hasło</string>
+    <string name="email_hint">Email</string>
+    <string name="username_hint">Nazwa użytkownika</string>
+
+    <string name="invalid_email_message">Wprowadź poprawny adres email</string>
+    <string name="invalid_password_message">Wprowadź poprawne hasło</string>
+    <string name="invalid_new_password_message">Wprowadź co najmniej 8 znaków</string>
+    <string name="invalid_username_message">Wprowadź co najmniej 6 znaków</string>
+    <string name="login_failed_message">Nie udało się zalogować</string>
+    <string name="register_failed_message">Nie udało się zarejestrować</string>
+
+    <string name="authorization_dialog">Autoryzacja…</string>
+    <string name="registration_dialog">Tworzenie konta…</string>
+
+    <string name="required_text_helper">Wymagane</string>
 </resources>

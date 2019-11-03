@@ -3,9 +3,19 @@ package c.michalkoziara.iot_mobile;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.os.Build;
 import android.os.Bundle;
+
+import android.transition.Explode;
+import android.transition.Scene;
+import android.transition.Slide;
+import android.transition.TransitionManager;
+
+import android.view.Gravity;
 import android.view.View;
 import android.util.Log;
+import android.view.Window;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -34,16 +44,40 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+            getWindow().setEnterTransition(new Explode());
+            getWindow().setReturnTransition(new Explode());
+        }
+
         setContentView(R.layout.activity_register);
 
         _nameText = findViewById(R.id.input_name);
         _nameTextLayout = findViewById(R.id.input_layout_username);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            _nameTextLayout.startAnimation(AnimationUtils.loadAnimation(
+                    this.getApplicationContext(), R.anim.slide_from_right
+            ));
+        }
+
         _emailText = findViewById(R.id.input_email);
         _emailTextLayout = findViewById(R.id.input_layout_email);
         _passwordText = findViewById(R.id.input_password);
         _passwordTextLayout = findViewById(R.id.input_layout_password);
         _signupButton = findViewById(R.id.btn_signup);
         _loginLink = findViewById(R.id.link_login);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            findViewById(R.id.logo).setTransitionName("logo");
+            _emailText.setTransitionName("input_email");
+            _emailTextLayout.setTransitionName("input_layout_email");
+            _passwordText.setTransitionName("input_password");
+            _passwordTextLayout.setTransitionName("input_layout_password");
+            _signupButton.setTransitionName("btn_login");
+            _loginLink.setTransitionName("link_sign_up");
+        }
 
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +90,18 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Finish the registration screen and return to the Login activity
-                finish();
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        _nameTextLayout.startAnimation(AnimationUtils.loadAnimation(
+                                RegisterActivity.this.getApplicationContext(), R.anim.slide_to_left
+                        ));
+                    }
+
+                    finishAfterTransition();
+                } else {
+                    finish();
+                }
             }
         });
     }
@@ -85,7 +130,12 @@ public class RegisterActivity extends AppCompatActivity {
         AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
             @Override
             public void processFinish(String output) {
-                Log.d(TAG, output);
+                if (output == null) {
+                    onSignupFailed();
+                } else {
+                    onSignupSuccess();
+                }
+                progressDialog.dismiss();
             }
 
             @Override
@@ -104,24 +154,18 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         sync.execute(Constants.register_url, name, password, email);
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
     }
 
 
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-//        finish();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition();
+        } else {
+            finish();
+        }
     }
 
     public void onSignupFailed() {

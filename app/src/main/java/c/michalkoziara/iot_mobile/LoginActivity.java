@@ -1,6 +1,12 @@
 package c.michalkoziara.iot_mobile;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
+import android.os.Build;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.TransitionManager;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,7 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.content.Intent;
+import android.util.Pair;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -26,11 +36,18 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText _passwordText;
     TextInputLayout _passwordTextLayout;
     MaterialButton _loginButton;
-    TextView _signupLink;
+    MaterialButton _signupLink;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
+            getWindow().setExitTransition(new Explode());
+        }
+
         setContentView(R.layout.activity_login);
 
         _emailText = findViewById(R.id.input_email);
@@ -48,13 +65,39 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            findViewById(R.id.logo).setTransitionName("logo");
+            _emailText.setTransitionName("input_email");
+            _emailTextLayout.setTransitionName("input_layout_email");
+            _passwordText.setTransitionName("input_password");
+            _passwordTextLayout.setTransitionName("input_layout_password");
+            _loginButton.setTransitionName("btn_login");
+            _signupLink.setTransitionName("link_sign_up");
+        }
+
         _signupLink.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                            LoginActivity.this,
+                            Pair.create((View) _emailText, "input_email"),
+                            Pair.create((View) _emailTextLayout, "input_layout_email"),
+                            Pair.create((View) _passwordText, "input_password"),
+                            Pair.create((View) _passwordTextLayout, "input_layout_password"),
+                            Pair.create((View) _loginButton, "btn_login"),
+                            Pair.create((View) _signupLink, "link_sign_up"),
+                            Pair.create(findViewById(R.id.logo), "logo")
+                    );
+                    startActivityForResult(intent, REQUEST_SIGNUP, options.toBundle());
+
+                } else {
+                    startActivityForResult(intent, REQUEST_SIGNUP);
+                }
             }
         });
     }

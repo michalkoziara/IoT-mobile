@@ -13,6 +13,11 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
+
 
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
@@ -76,6 +81,29 @@ public class RegisterActivity extends AppCompatActivity {
         String password = _passwordText.getText().toString();
 
         // TODO: Implement your own signup logic here.
+
+        AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                Log.d(TAG, output);
+            }
+
+            @Override
+            public String createRequest(String[] params) {
+                JSONObject credentials = new JSONObject();
+                try {
+                    credentials.put("username", params[1]);
+                    credentials.put("password", params[2]);
+                    credentials.put("email", params[3]);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return HttpConnectionFactory.createPostConnection(params[0], credentials);
+            }
+        });
+
+        sync.execute(Constants.register_url, name, password, email);
 
         new android.os.Handler().postDelayed(
                 new Runnable() {

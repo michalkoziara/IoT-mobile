@@ -1,32 +1,25 @@
 package c.michalkoziara.iot_mobile;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-
 import android.transition.Explode;
-import android.transition.Scene;
-import android.transition.Slide;
-import android.transition.TransitionManager;
-
-import android.view.Gravity;
-import android.view.View;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.lang.ref.WeakReference;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -89,15 +82,12 @@ public class RegisterActivity extends AppCompatActivity {
         _loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Finish the registration screen and return to the Login activity
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         _nameTextLayout.startAnimation(AnimationUtils.loadAnimation(
                                 RegisterActivity.this.getApplicationContext(), R.anim.slide_to_left
                         ));
                     }
-
                     finishAfterTransition();
                 } else {
                     finish();
@@ -125,15 +115,16 @@ public class RegisterActivity extends AppCompatActivity {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        // TODO: Implement your own signup logic here.
-
         AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
             @Override
             public void processFinish(String output) {
                 if (output == null) {
                     onSignupFailed();
                 } else {
-                    onSignupSuccess();
+                    onSignupSuccess(
+                            _emailText.getText().toString(),
+                            _passwordText.getText().toString()
+                    );
                 }
                 progressDialog.dismiss();
             }
@@ -157,9 +148,16 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-    public void onSignupSuccess() {
+    public void onSignupSuccess(String email, String password) {
         _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
+        Bundle registrationData = new Bundle();
+        registrationData.putString("email", email);
+        registrationData.putString("password", password);
+
+        Intent intent = new Intent();
+        intent.putExtras(registrationData);
+
+        setResult(RESULT_OK, intent);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAfterTransition();

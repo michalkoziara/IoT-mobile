@@ -2,29 +2,26 @@ package c.michalkoziara.iot_mobile;
 
 import android.app.ActivityOptions;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.transition.Explode;
-import android.transition.Fade;
-import android.transition.Slide;
-import android.transition.TransitionManager;
 import android.util.Log;
+import android.util.Pair;
+import android.view.View;
+import android.view.Window;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
-
-import android.content.Intent;
-import android.util.Pair;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.TextView;
-
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -79,7 +76,6 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -120,17 +116,39 @@ public class LoginActivity extends AppCompatActivity {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        // TODO: Implement your own authentication logic here.
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
-                        progressDialog.dismiss();
+        AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                if (output == null) {
+                    onLoginFailed();
+                } else {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(output);
+                        String authToken = jsonResponse.getString("authToken");
+                        onLoginSuccess(authToken);
+                    } catch (JSONException e) {
+                        onLoginFailed();
+                        e.printStackTrace();
                     }
-                }, 3000);
+                }
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public String createRequest(String[] params) {
+                JSONObject credentials = new JSONObject();
+                try {
+                    credentials.put("email", params[1]);
+                    credentials.put("password", params[2]);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return HttpConnectionFactory.createPostConnection(params[0], credentials);
+            }
+        });
+
+        sync.execute(Constants.login_url, email, password);
     }
 
 
@@ -140,23 +158,32 @@ public class LoginActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
+                Bundle registrationData = data.getExtras();
+                String email = registrationData.getString("email");
+                String password = registrationData.getString("password");
 
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
-//                this.finish();
+                _emailText.setText(email);
+                _passwordText.setText(password);
+                login();
             }
         }
     }
 
     @Override
     public void onBackPressed() {
-        // disable going back to the MainActivity
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess() {
+    public void onLoginSuccess(String authToken) {
         _loginButton.setEnabled(true);
-//        finish();
+
+        SharedPreferences sharedPreferences = this.getSharedPreferences("authorization", Context.MODE_PRIVATE);
+        SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+        sharedPreferencesEditor.putString("authToken", authToken);
+        sharedPreferencesEditor.commit();
+
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
 
     public void onLoginFailed() {

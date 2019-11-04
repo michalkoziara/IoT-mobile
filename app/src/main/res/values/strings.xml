@@ -28,4 +28,10 @@
     <string name="logout_bottom_nav">Wyloguj się"</string>
     <string name="refresh_bottom_nav">Odśwież"</string>
 
+    <string name="device_group_tab_item">Urządzenia główne"</string>
+    <string name="user_group_tab_item">Grupy użytkowników"</string>
+    <string name="executive_device_tab_item">Urządzenia wykonawcze"</string>
+    <string name="sensor_tab_item">Sensory"</string>
+
+
 </resources>

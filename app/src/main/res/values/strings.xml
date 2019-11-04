@@ -17,10 +17,15 @@
     <string name="invalid_new_password_message">Wprowadź co najmniej 8 znaków</string>
     <string name="invalid_username_message">Wprowadź co najmniej 6 znaków</string>
     <string name="login_failed_message">Nie udało się zalogować</string>
+    <string name="main_menu_login_failed_message">Wystąpił błąd, proszę zalogować się ponownie</string>
     <string name="register_failed_message">Nie udało się zarejestrować</string>
 
     <string name="authorization_dialog">Autoryzacja…</string>
     <string name="registration_dialog">Tworzenie konta…</string>
 
     <string name="required_text_helper">Wymagane</string>
+
+    <string name="logout_bottom_nav">Wyloguj się"</string>
+    <string name="refresh_bottom_nav">Odśwież"</string>
+
 </resources>

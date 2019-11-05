@@ -17,7 +17,6 @@
     <string name="invalid_new_password_message">Wprowadź co najmniej 8 znaków</string>
     <string name="invalid_username_message">Wprowadź co najmniej 6 znaków</string>
     <string name="login_failed_message">Nie udało się zalogować</string>
-    <string name="main_menu_login_failed_message">Wystąpił błąd, proszę zalogować się ponownie</string>
     <string name="register_failed_message">Nie udało się zarejestrować</string>
 
     <string name="authorization_dialog">Autoryzacja…</string>
@@ -31,7 +30,12 @@
     <string name="device_group_tab_item">Urządzenia główne"</string>
     <string name="user_group_tab_item">Grupy użytkowników"</string>
     <string name="executive_device_tab_item">Urządzenia wykonawcze"</string>
-    <string name="sensor_tab_item">Sensory"</string>
+    <string name="sensor_tab_item">Czujniki"</string>
 
+    <string name="main_menu_login_failed_message">Wystąpił błąd, proszę zalogować się ponownie</string>
+    <string name="main_menu_load_failed_message">Wystąpił błąd, proszę odświeżyć dane</string>
+
+    <string name="user_group_executive_btn">Urządzenia"</string>
+    <string name="user_group_sensor_btn">Czujniki"</string>
 
 </resources>

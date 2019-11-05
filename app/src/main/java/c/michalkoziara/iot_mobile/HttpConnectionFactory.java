@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 public class HttpConnectionFactory {
 
-    public static String createGetConnection(String urlText) {
+    public static String createGetConnection(String urlText, String authToken) {
 
         HttpURLConnection connection = null;
         BufferedReader reader = null;
@@ -20,6 +20,8 @@ public class HttpConnectionFactory {
         try {
             URL url = new URL(urlText);
             connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Authorization", "Bearer " + authToken);
             connection.connect();
 
             InputStream stream = connection.getInputStream();

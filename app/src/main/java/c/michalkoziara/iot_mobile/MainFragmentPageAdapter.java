@@ -2,19 +2,20 @@ package c.michalkoziara.iot_mobile;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainFragmentPageAdapter extends FragmentPagerAdapter {
+public class MainFragmentPageAdapter extends FragmentStatePagerAdapter {
     private Context context;
-    public String isSensorOrExecutive;
+    String isSensorOrExecutive;
 
     MainFragmentPageAdapter(FragmentManager fm, Context context) {
-        super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        super(fm, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.context = context;
         this.isSensorOrExecutive = null;
     }
@@ -28,6 +29,7 @@ public class MainFragmentPageAdapter extends FragmentPagerAdapter {
         }
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
@@ -40,6 +42,16 @@ public class MainFragmentPageAdapter extends FragmentPagerAdapter {
             return new SensorFragment();
         }
         return new Fragment();
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        if (object instanceof ExecutiveDeviceFragment ||
+        object instanceof SensorFragment) {
+            return POSITION_NONE;
+        } else {
+            return POSITION_UNCHANGED;
+        }
     }
 
     @Override

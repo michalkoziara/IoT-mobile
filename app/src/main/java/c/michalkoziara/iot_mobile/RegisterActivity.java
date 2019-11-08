@@ -83,11 +83,10 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        _nameTextLayout.startAnimation(AnimationUtils.loadAnimation(
-                                RegisterActivity.this.getApplicationContext(), R.anim.slide_to_left
-                        ));
-                    }
+                    _nameTextLayout.startAnimation(AnimationUtils.loadAnimation(
+                            RegisterActivity.this.getApplicationContext(),
+                            R.anim.slide_to_left
+                    ));
                     finishAfterTransition();
                 } else {
                     finish();
@@ -111,9 +110,15 @@ public class RegisterActivity extends AppCompatActivity {
         progressDialog.setMessage(getString(R.string.registration_dialog));
         progressDialog.show();
 
-        String name = _nameText.getText().toString();
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        String name = _nameText.getText() != null
+                ? _nameText.getText().toString()
+                : "";
+        String email = _emailText.getText() != null
+                ? _emailText.getText().toString()
+                : "";
+        String password = _passwordText.getText() != null
+                ? _passwordText.getText().toString()
+                : "";
 
         AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
             @Override
@@ -176,9 +181,15 @@ public class RegisterActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String name = _nameText.getText().toString();
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        String name = _nameText.getText() != null
+                ? _nameText.getText().toString()
+                : "";
+        String email = _emailText.getText() != null
+                ? _emailText.getText().toString()
+                : "";
+        String password = _passwordText.getText() != null
+                ? _passwordText.getText().toString()
+                : "";
 
         if (name.isEmpty() || name.length() < 6) {
             _nameTextLayout.setError(getString(R.string.invalid_username_message));

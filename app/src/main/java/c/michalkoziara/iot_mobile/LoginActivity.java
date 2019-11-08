@@ -113,8 +113,12 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage(getString(R.string.authorization_dialog));
         progressDialog.show();
 
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        String email = _emailText.getText() != null
+                ? _emailText.getText().toString()
+                : "";
+        String password = _passwordText.getText() != null
+                ? _passwordText.getText().toString()
+                : "";
 
         AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
             @Override
@@ -159,8 +163,12 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
                 Bundle registrationData = data.getExtras();
-                String email = registrationData.getString("email");
-                String password = registrationData.getString("password");
+                String email = registrationData != null
+                        ? registrationData.getString("email")
+                        : "";
+                String password = registrationData != null
+                        ? registrationData.getString("password")
+                        : "";
 
                 _emailText.setText(email);
                 _passwordText.setText(password);
@@ -196,8 +204,12 @@ public class LoginActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        String email = _emailText.getText() != null
+                ? _emailText.getText().toString()
+                : "";
+        String password = _passwordText.getText() != null
+                ? _passwordText.getText().toString()
+                : "";
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             _emailTextLayout.setError(getString(R.string.invalid_email_message));

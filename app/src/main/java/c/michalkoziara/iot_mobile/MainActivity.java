@@ -1,21 +1,18 @@
 package c.michalkoziara.iot_mobile;
 
-import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Pair;
 import android.view.View;
+import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
@@ -27,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements UserGroupFragment.UserGroupListener {
-    private static final String TAG = "MainActivity";
     MainFragmentPageAdapter mainFragmentPageAdapter;
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +33,8 @@ public class MainActivity extends AppCompatActivity implements UserGroupFragment
         setContentView(R.layout.activity_main);
 
         String authToken = getToken();
-        Log.d(TAG, authToken);
 
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) findViewById(R.id.tab_layout_view_pager);
+        viewPager = findViewById(R.id.tab_layout_view_pager);
         FragmentManager fragmentManager = getSupportFragmentManager();
         mainFragmentPageAdapter = new MainFragmentPageAdapter(
                 fragmentManager,
@@ -49,15 +44,14 @@ public class MainActivity extends AppCompatActivity implements UserGroupFragment
                 mainFragmentPageAdapter
         );
 
-        // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
+        TabLayout tabLayout = findViewById(R.id.main_tab_layout);
         tabLayout.setupWithViewPager(viewPager);
 
+        getMainDevices(authToken);
     }
 
-
     @Override
-    public void onAttachFragment(Fragment fragment) {
+    public void onAttachFragment(@NonNull Fragment fragment) {
         if (fragment instanceof UserGroupFragment) {
             UserGroupFragment userGroupFragment = (UserGroupFragment) fragment;
             userGroupFragment.setUserGroupListener(this);
@@ -68,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements UserGroupFragment
     public void onBackPressed() {
     }
 
-    private void getMainDevices(final String authToken) {
+    private void getMainDevices(String authToken) {
 
         AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
             @Override
@@ -77,25 +71,36 @@ public class MainActivity extends AppCompatActivity implements UserGroupFragment
                     View contextView = findViewById(R.id.tab_layout_view_pager);
                     Snackbar.make(contextView, R.string.main_menu_load_failed_message, Snackbar.LENGTH_LONG).show();
                 } else {
+                    Map<String, String> deviceGroupProductKeyByNames = new HashMap<>();
                     try {
                         JSONArray deviceGroupListJson = new JSONArray(output);
-
-                        Map<String, String> deviceGroupProductKeyByNames = new HashMap<>();
                         for (int i = 0; i < deviceGroupListJson.length(); i++) {
                             JSONObject deviceGroupInfoJson = deviceGroupListJson.getJSONObject(i);
 
                             deviceGroupProductKeyByNames.put(
-                                    deviceGroupInfoJson.getString("productKey"),
-                                    deviceGroupInfoJson.getString("name")
+                                    deviceGroupInfoJson.getString("name"),
+                                    deviceGroupInfoJson.getString("productKey")
                             );
                         }
-
-                        Log.d(TAG, deviceGroupProductKeyByNames.toString());
-
                     } catch (JSONException e) {
                         View contextView = findViewById(R.id.tab_layout_view_pager);
                         Snackbar.make(contextView, R.string.main_menu_load_failed_message, Snackbar.LENGTH_LONG).show();
                         e.printStackTrace();
+                    }
+
+                    View view = viewPager.findViewWithTag("deviceGroupFragmentView");
+                    for (String deviceGroupName : deviceGroupProductKeyByNames.keySet()) {
+                        MaterialButton materialButton = new MaterialButton(
+                                MainActivity.this,
+                                null,
+                                R.attr.borderlessButtonStyle);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        );
+                        LinearLayout linearLayout = view.findViewById(R.id.device_groups_linear);
+                        linearLayout.addView(materialButton, layoutParams);
+                        materialButton.setText(deviceGroupName);
                     }
                 }
             }
@@ -126,9 +131,10 @@ public class MainActivity extends AppCompatActivity implements UserGroupFragment
 
             @Override
             public void onClick(View v) {
-
                 mainFragmentPageAdapter.isSensorOrExecutive = "sensor";
                 mainFragmentPageAdapter.notifyDataSetChanged();
+
+                viewPager.setCurrentItem(2);
             }
         };
     }
@@ -139,9 +145,10 @@ public class MainActivity extends AppCompatActivity implements UserGroupFragment
 
             @Override
             public void onClick(View v) {
-
                 mainFragmentPageAdapter.isSensorOrExecutive = "executive";
                 mainFragmentPageAdapter.notifyDataSetChanged();
+
+                viewPager.setCurrentItem(2);
             }
         };
     }

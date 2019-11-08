@@ -10,9 +10,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class HttpConnectionFactory {
+class HttpConnectionFactory {
 
-    public static String createGetConnection(String urlText, String authToken) {
+    static String createGetConnection(String urlText, String authToken) {
 
         HttpURLConnection connection = null;
         BufferedReader reader = null;

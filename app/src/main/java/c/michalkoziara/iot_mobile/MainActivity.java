@@ -3,8 +3,8 @@ package c.michalkoziara.iot_mobile;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements UserGroupFragment
         TabLayout tabLayout = findViewById(R.id.main_tab_layout);
         tabLayout.setupWithViewPager(viewPager);
 
-        getMainDevices(authToken);
+        viewPager.setCurrentItem(0);
     }
 
     @Override
@@ -56,73 +55,14 @@ public class MainActivity extends AppCompatActivity implements UserGroupFragment
             UserGroupFragment userGroupFragment = (UserGroupFragment) fragment;
             userGroupFragment.setUserGroupListener(this);
         }
+//        if (fragment instanceof DeviceGroupFragment) {
+//            DeviceGroupFragment deviceGroupFragment = (DeviceGroupFragment) fragment;
+//            deviceGroupFragment.setDeviceGroupListener(this);
+//        }
     }
 
     @Override
     public void onBackPressed() {
-    }
-
-    private void getMainDevices(String authToken) {
-
-        AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
-            @Override
-            public void processFinish(String output) {
-                if (output == null) {
-                    View contextView = findViewById(R.id.tab_layout_view_pager);
-                    Snackbar.make(contextView, R.string.main_menu_load_failed_message, Snackbar.LENGTH_LONG).show();
-                } else {
-                    Map<String, String> deviceGroupProductKeyByNames = new HashMap<>();
-                    try {
-                        JSONArray deviceGroupListJson = new JSONArray(output);
-                        for (int i = 0; i < deviceGroupListJson.length(); i++) {
-                            JSONObject deviceGroupInfoJson = deviceGroupListJson.getJSONObject(i);
-
-                            deviceGroupProductKeyByNames.put(
-                                    deviceGroupInfoJson.getString("name"),
-                                    deviceGroupInfoJson.getString("productKey")
-                            );
-                        }
-                    } catch (JSONException e) {
-                        View contextView = findViewById(R.id.tab_layout_view_pager);
-                        Snackbar.make(contextView, R.string.main_menu_load_failed_message, Snackbar.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-
-                    View view = viewPager.findViewWithTag("deviceGroupFragmentView");
-                    for (String deviceGroupName : deviceGroupProductKeyByNames.keySet()) {
-                        MaterialButton materialButton = new MaterialButton(
-                                MainActivity.this,
-                                null,
-                                R.attr.borderlessButtonStyle);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.WRAP_CONTENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT
-                        );
-                        LinearLayout linearLayout = view.findViewById(R.id.device_groups_linear);
-                        linearLayout.addView(materialButton, layoutParams);
-                        materialButton.setText(deviceGroupName);
-                    }
-                }
-            }
-
-            @Override
-            public String createRequest(String[] params) {
-                return HttpConnectionFactory.createGetConnection(params[0], params[1]);
-            }
-        });
-
-        sync.execute(Constants.hubs_url, authToken);
-    }
-
-    private String getToken() {
-        SharedPreferences sharedPreferences = this.getSharedPreferences("authorization", Context.MODE_PRIVATE);
-        String authToken = sharedPreferences.getString("authToken", "");
-
-        if (authToken == null || authToken.equals("")) {
-            View contextView = findViewById(R.id.tab_layout_view_pager);
-            Snackbar.make(contextView, R.string.main_menu_login_failed_message, Snackbar.LENGTH_LONG).show();
-        }
-        return authToken;
     }
 
     @Override
@@ -151,5 +91,64 @@ public class MainActivity extends AppCompatActivity implements UserGroupFragment
                 viewPager.setCurrentItem(2);
             }
         };
+    }
+
+    private void getMainDevices(String authToken) {
+        AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                if (output == null) {
+                    View contextView = findViewById(R.id.tab_layout_view_pager);
+                    Snackbar.make(contextView, R.string.main_menu_load_failed_message, Snackbar.LENGTH_LONG).show();
+                } else {
+                    Map<String, String> deviceGroupProductKeyByNames = new HashMap<>();
+                    try {
+                        JSONArray deviceGroupListJson = new JSONArray(output);
+                        for (int i = 0; i < deviceGroupListJson.length(); i++) {
+                            JSONObject deviceGroupInfoJson = deviceGroupListJson.getJSONObject(i);
+
+                            deviceGroupProductKeyByNames.put(
+                                    deviceGroupInfoJson.getString("name"),
+                                    deviceGroupInfoJson.getString("productKey")
+                            );
+                        }
+                    } catch (JSONException e) {
+                        View contextView = findViewById(R.id.tab_layout_view_pager);
+                        Snackbar.make(contextView, R.string.main_menu_load_failed_message, Snackbar.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }
+
+                    fillDeviceGroupFragmentWithButtons(deviceGroupProductKeyByNames);
+                }
+            }
+
+            @Override
+            public String createRequest(String[] params) {
+                return HttpConnectionFactory.createGetConnection(params[0], params[1]);
+            }
+        });
+
+        sync.execute(Constants.hubs_url, authToken);
+    }
+
+    private void fillDeviceGroupFragmentWithButtons(Map<String, String> deviceGroupProductKeyByNames) {
+        View view = viewPager.findViewWithTag("deviceGroupFragmentView");
+
+        if (view != null) {
+
+            Log.d("testt", "tesf");
+            mainFragmentPageAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private String getToken() {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("authorization", Context.MODE_PRIVATE);
+        String authToken = sharedPreferences.getString("authToken", "");
+
+        if (authToken == null || authToken.equals("")) {
+            View contextView = findViewById(R.id.tab_layout_view_pager);
+            Snackbar.make(contextView, R.string.main_menu_login_failed_message, Snackbar.LENGTH_LONG).show();
+        }
+        return authToken;
     }
 }

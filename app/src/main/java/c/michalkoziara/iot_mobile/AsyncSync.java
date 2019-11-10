@@ -5,9 +5,9 @@ import android.os.AsyncTask;
 public class AsyncSync extends AsyncTask<String, String, String> {
 
     public interface AsyncResponse {
-        void processFinish(String output);
-
         String createRequest(String[] params);
+
+        void processFinish(String output);
     }
 
     private AsyncResponse delegateAsync;

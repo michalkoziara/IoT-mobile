@@ -36,6 +36,8 @@ public class DeviceGroupFragment extends ListFragment {
         void onDeviceGroupClick(String deviceGroupName);
 
         void passDeviceGroupProductKeyByNamesToMain(Map<String, String> deviceGroupProductKeyByNames);
+
+        void resetUserGroupAndIsExecutiveOrSensor();
     }
 
     @Override
@@ -73,13 +75,17 @@ public class DeviceGroupFragment extends ListFragment {
         materialTextView.setBackgroundColor(Color.parseColor("#e0e0e0"));
 
         if (selectedPosition != null && selectedPosition != position) {
-            MaterialTextView previouslySelectedMaterialTextView = (MaterialTextView) l.getChildAt(selectedPosition);
+            callback.resetUserGroupAndIsExecutiveOrSensor();
+
+            MaterialTextView previouslySelectedMaterialTextView =
+                    (MaterialTextView) getRowAtRealPosition(selectedPosition, l);
 
             if (previouslySelectedMaterialTextView != null) {
                 previouslySelectedMaterialTextView.setTextColor(Color.parseColor("#757575"));
                 previouslySelectedMaterialTextView.setBackgroundColor(Color.parseColor("#ffffff"));
             }
         }
+
         adapter.setSelectedPosition(position);
         this.selectedPosition = position;
 
@@ -124,5 +130,11 @@ public class DeviceGroupFragment extends ListFragment {
         if (callback != null) {
             callback.passDeviceGroupProductKeyByNamesToMain(deviceGroupProductKeyByNames);
         }
+    }
+
+    private View getRowAtRealPosition(int pos, @NonNull ListView listView) {
+        int firstListItemPosition = listView.getFirstVisiblePosition();
+        int childIndex = pos - firstListItemPosition;
+        return listView.getChildAt(childIndex);
     }
 }

@@ -1,20 +1,20 @@
 package c.michalkoziara.iot_mobile;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RadioButton;
+
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.List;
 
 public class UserGroupAdapter extends BaseAdapter {
-    List<String> userGroupNames;
-    Context context;
+    private Context context;
 
+    private List<String> userGroupNames;
     private Integer selectedPosition;
 
     UserGroupAdapter(Context context, List<String> userGroupNames) {
@@ -44,45 +44,26 @@ public class UserGroupAdapter extends BaseAdapter {
                     .inflate(R.layout.layout_user_group, parent, false);
         }
 
-        LinearLayout linearLayout = (LinearLayout) convertView;
-        RadioButton radioButton = linearLayout.findViewById(R.id.user_group_radio_button);
-        radioButton.setText((String) getItem(position));
+        MaterialTextView materialTextView = (MaterialTextView) convertView;
+        materialTextView.setText((String) getItem(position));
 
         if (this.selectedPosition != null
                 && this.selectedPosition == position) {
-            radioButton.setChecked(true);
+            materialTextView.setTextColor(Color.parseColor("#6200EE"));
+            materialTextView.setBackgroundColor(Color.parseColor("#e0e0e0"));
         } else {
-            radioButton.setChecked(false);
+            materialTextView.setTextColor(Color.parseColor("#757575"));
+            materialTextView.setBackgroundColor(Color.parseColor("#ffffff"));
         }
-
-        radioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selectedPosition != null && selectedPosition != position) {
-                    LinearLayout previouslyLinearLayout = (LinearLayout) getRowAtRealPosition(
-                            selectedPosition,
-                            (ListView) parent
-                    );
-
-                    if (previouslyLinearLayout != null) {
-                        RadioButton radioButton = previouslyLinearLayout.findViewById(R.id.user_group_radio_button);
-
-                        if (radioButton != null) {
-                            radioButton.setChecked(false);
-                        }
-                    }
-                }
-
-                selectedPosition = position;
-            }
-        });
 
         return convertView;
     }
 
-    private View getRowAtRealPosition(int pos, ListView listView) {
-        int firstListItemPosition = listView.getFirstVisiblePosition();
-        int childIndex = pos - firstListItemPosition;
-        return listView.getChildAt(childIndex);
+    Integer getSelectedPosition() {
+        return selectedPosition;
+    }
+
+    void setSelectedPosition(Integer selectedPosition) {
+        this.selectedPosition = selectedPosition;
     }
 }

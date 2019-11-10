@@ -13,7 +13,7 @@ import java.util.List;
 public class MainFragmentPageAdapter extends FragmentStatePagerAdapter {
 
     String isSensorOrExecutive;
-    Boolean isUserGroupSelected = false;
+    Boolean isDeviceGroupSelected = false;
 
     private Context context;
 
@@ -27,7 +27,7 @@ public class MainFragmentPageAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         if (isSensorOrExecutive != null) {
             return 3;
-        } else if (isUserGroupSelected) {
+        } else if (isDeviceGroupSelected) {
             return 2;
         } else {
             return 1;
@@ -41,7 +41,7 @@ public class MainFragmentPageAdapter extends FragmentStatePagerAdapter {
 
         if (position == 0) {
             fragment = new DeviceGroupFragment();
-        } else if (position == 1 && isUserGroupSelected) {
+        } else if (position == 1 && isDeviceGroupSelected) {
             fragment = new UserGroupFragment();
         } else if (position == 2 && isSensorOrExecutive.equals("executive")) {
             fragment = new ExecutiveDeviceFragment();
@@ -68,7 +68,7 @@ public class MainFragmentPageAdapter extends FragmentStatePagerAdapter {
         List<String> tabTitles = new ArrayList<>();
         tabTitles.add(context.getString(R.string.device_group_tab_item));
 
-        if (isUserGroupSelected) {
+        if (isDeviceGroupSelected) {
             tabTitles.add(context.getString(R.string.user_group_tab_item));
         }
 

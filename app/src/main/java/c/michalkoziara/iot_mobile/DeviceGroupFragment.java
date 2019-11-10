@@ -14,15 +14,16 @@ import androidx.fragment.app.ListFragment;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class DeviceGroupFragment extends ListFragment {
     private DeviceGroupListener callback;
-    private Map<String, String> deviceGroupProductKeyByNames;
     private DeviceGroupAdapter adapter;
     private View view;
+
+    private Map<String, String> deviceGroupProductKeyByNames;
+    private List<String> deviceGroupNames = new ArrayList<>();
     private Integer selectedPosition;
 
     void setDeviceGroupListener(DeviceGroupListener callback) {
@@ -30,13 +31,11 @@ public class DeviceGroupFragment extends ListFragment {
     }
 
     public interface DeviceGroupListener {
-        void onDeviceGroupCreate();
+        void createDeviceGroups();
 
         void onDeviceGroupClick(String deviceGroupName);
-    }
 
-    void setDeviceGroupProductKeyByNames(Map<String, String> deviceGroupProductKeyByNames) {
-        this.deviceGroupProductKeyByNames = deviceGroupProductKeyByNames;
+        void passDeviceGroupProductKeyByNamesToMain(Map<String, String> deviceGroupProductKeyByNames);
     }
 
     @Override
@@ -73,7 +72,7 @@ public class DeviceGroupFragment extends ListFragment {
         materialTextView.setTextColor(Color.parseColor("#6200EE"));
         materialTextView.setBackgroundColor(Color.parseColor("#e0e0e0"));
 
-        if (selectedPosition != null) {
+        if (selectedPosition != null && selectedPosition != position) {
             MaterialTextView previouslySelectedMaterialTextView = (MaterialTextView) l.getChildAt(selectedPosition);
 
             if (previouslySelectedMaterialTextView != null) {
@@ -99,18 +98,31 @@ public class DeviceGroupFragment extends ListFragment {
     }
 
     void populateListView() {
-        callback.onDeviceGroupCreate();
-        if (deviceGroupProductKeyByNames != null) {
-            if (isAdded() && adapter == null) {
-                List<String> deviceGroupNames = new ArrayList<>(deviceGroupProductKeyByNames.keySet());
-                Collections.sort(deviceGroupNames);
-                adapter = new DeviceGroupAdapter(getContext(), deviceGroupNames);
-
-                if (selectedPosition != null) {
-                    adapter.setSelectedPosition(this.selectedPosition);
-                }
-                setListAdapter(adapter);
+        callback.createDeviceGroups();
+        if (isAdded() && adapter == null) {
+            if (deviceGroupProductKeyByNames != null) {
+                deviceGroupNames = new ArrayList<>(deviceGroupProductKeyByNames.keySet());
             }
+            adapter = new DeviceGroupAdapter(getContext(), deviceGroupNames);
+
+            if (selectedPosition != null) {
+                adapter.setSelectedPosition(this.selectedPosition);
+            }
+            setListAdapter(adapter);
+        }
+    }
+
+    void setDeviceGroupProductKeyByNames(Map<String, String> deviceGroupProductKeyByNames) {
+        this.deviceGroupProductKeyByNames = deviceGroupProductKeyByNames;
+        this.deviceGroupNames.clear();
+        this.deviceGroupNames.addAll(deviceGroupProductKeyByNames.keySet());
+
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+
+        if (callback != null) {
+            callback.passDeviceGroupProductKeyByNamesToMain(deviceGroupProductKeyByNames);
         }
     }
 }

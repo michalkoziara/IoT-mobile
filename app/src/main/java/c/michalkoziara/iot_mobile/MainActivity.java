@@ -18,7 +18,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements
     Map<String, String> deviceGroupProductKeyByNames;
     String deviceGroupProductKey;
 
+    List<String> userGroupNames;
     Boolean isUserGroupSelected = false;
 
     @Override
@@ -87,6 +90,33 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    //
+    //
+    //        DeviceGroupListener
+    //
+    //
+    //
+    //
+
+    @Override
+    public void createDeviceGroups() {
+        String authToken = getToken();
+
+//        getDeviceGroups(authToken);
+
+        Map<String, String> testDeviceGroupProductKeyByNames = new HashMap<>();
+        for (int i = 0; i < 350; i++) {
+            testDeviceGroupProductKeyByNames.put(String.valueOf(i), String.valueOf(i));
+        }
+        DeviceGroupFragment deviceGroupFragment =
+                (DeviceGroupFragment) mainFragmentPageAdapter.instantiateItem(
+                        viewPager,
+                        0
+                );
+
+        deviceGroupFragment.setDeviceGroupProductKeyByNames(testDeviceGroupProductKeyByNames);
+    }
+
     @Override
     public void onDeviceGroupClick(String deviceGroupName) {
         if (deviceGroupProductKeyByNames != null && deviceGroupProductKeyByNames.containsKey(deviceGroupName)) {
@@ -103,21 +133,41 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onDeviceGroupCreate() {
+    public void passDeviceGroupProductKeyByNamesToMain(Map<String, String> deviceGroupProductKeyByNames) {
+        this.deviceGroupProductKeyByNames = deviceGroupProductKeyByNames;
+    }
+
+    //
+    //
+    //        UserGroupListener
+    //
+    //
+    //
+    //
+
+    @Override
+    public void createUserGroups() {
         String authToken = getToken();
 
-        DeviceGroupFragment deviceGroupFragment = (DeviceGroupFragment) mainFragmentPageAdapter.instantiateItem(
-                viewPager,
-                0
-        );
+//        getDeviceGroups(authToken);
 
-//        getMainDevices(authToken);
-        deviceGroupProductKeyByNames = new HashMap<>();
+        List<String> testUserGroups = new ArrayList<>();
         for (int i = 0; i < 350; i++) {
-            deviceGroupProductKeyByNames.put(String.valueOf(i), String.valueOf(i));
+            testUserGroups.add(String.valueOf(i));
         }
 
-        deviceGroupFragment.setDeviceGroupProductKeyByNames(deviceGroupProductKeyByNames);
+        UserGroupFragment userGroupFragment =
+                (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
+                        viewPager,
+                        1
+                );
+
+        userGroupFragment.setUserGroupNames(testUserGroups);
+    }
+
+    @Override
+    public void passUserGroupNamesToMain(List<String> userGroupNames) {
+        this.userGroupNames = userGroupNames;
     }
 
     @Override
@@ -148,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements
         };
     }
 
-    private void getMainDevices(String authToken) {
+    private void getDeviceGroups(String authToken) {
         AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
             @Override
             public void processFinish(String output) {
@@ -191,6 +241,8 @@ public class MainActivity extends AppCompatActivity implements
 
         sync.execute(Constants.hubs_url, authToken);
     }
+
+    //  MainActivity
 
     private String getToken() {
         SharedPreferences sharedPreferences = this.getSharedPreferences("authorization", Context.MODE_PRIVATE);

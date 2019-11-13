@@ -4,27 +4,75 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.ListFragment;
 
-public class SensorFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+public class SensorFragment extends ListFragment {
+    private SensorFragment.SensorListener callback;
+    private SensorAdapter adapter;
+    private View view;
+
+    private Map<String, String> sensorValuesByNames = new HashMap<>();
+    private List<String> sensorNames = new ArrayList<>();
+
+    void setSensorListener(SensorFragment.SensorListener callback) {
+        this.callback = callback;
+    }
+
+    public interface SensorListener {
+        void createSensors();
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_sensors, container, false);
-        TextView textView = (TextView) view;
-        textView.setText("Fragment #");
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-        view.setTag("sensorFragmentView");
+        populateListView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        populateListView();
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (view == null) {
+            view = inflater.inflate(R.layout.fragment_sensors, container, false);
+            view.setTag("sensorFragmentView");
+        }
+
         return view;
+    }
+
+    void setSensorValuesByNames(Map<String, String> sensorValuesByNames) {
+        this.sensorValuesByNames.clear();
+        this.sensorValuesByNames.putAll(sensorValuesByNames);
+
+        sensorNames.clear();
+        if(!this.sensorValuesByNames.isEmpty()) {
+            sensorNames.addAll(sensorValuesByNames.keySet());
+        }
+
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void populateListView() {
+        callback.createSensors();
+        if (isAdded() && adapter == null) {
+            adapter = new SensorAdapter(getContext(), sensorNames, sensorValuesByNames);
+            setListAdapter(adapter);
+        }
     }
 }

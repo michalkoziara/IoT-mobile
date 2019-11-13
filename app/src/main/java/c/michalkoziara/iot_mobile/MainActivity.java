@@ -25,7 +25,9 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements
         UserGroupFragment.UserGroupListener,
-        DeviceGroupFragment.DeviceGroupListener {
+        DeviceGroupFragment.DeviceGroupListener,
+        ExecutiveDeviceFragment.ExecutiveDeviceListener,
+        SensorFragment.SensorListener {
     MainFragmentPageAdapter mainFragmentPageAdapter;
     ViewPager viewPager;
 
@@ -38,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements
     Boolean isUserGroupSelected = false;
 
     String isSensorOrExecutive;
+
+    Map<String, String> executiveDeviceKeyByNames;
+
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -103,6 +108,14 @@ public class MainActivity extends AppCompatActivity implements
             DeviceGroupFragment deviceGroupFragment = (DeviceGroupFragment) fragment;
             deviceGroupFragment.setDeviceGroupListener(this);
         }
+        if (fragment instanceof ExecutiveDeviceFragment) {
+            ExecutiveDeviceFragment executiveDeviceFragment = (ExecutiveDeviceFragment) fragment;
+            executiveDeviceFragment.setExecutiveDeviceListener(this);
+        }
+        if (fragment instanceof SensorFragment) {
+            SensorFragment sensorFragment = (SensorFragment) fragment;
+            sensorFragment.setSensorListener(this);
+        }
     }
 
     //
@@ -153,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void resetUserGroupAndIsExecutiveOrSensor() {
         setIsSensorOrExecutive(null);
+        userGroupName = null;
 
         UserGroupFragment userGroupFragment =
                 (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
@@ -242,6 +256,72 @@ public class MainActivity extends AppCompatActivity implements
         };
     }
 
+    //
+    //
+    //        ExecutiveDeviceListener
+    //
+    //
+
+    @Override
+    public void createExecutiveDevices() {
+        String authToken = getToken();
+
+//        if (deviceGroupProductKey != null && userGroupName != null) {
+//            getExecutiveDevices(authToken, deviceGroupProductKey, userGroupName);
+//        }
+
+        Map<String, String> testDeviceKeyByNames = new HashMap<>();
+        for (int i = 0; i < 350; i++) {
+            testDeviceKeyByNames.put(String.valueOf(i), String.valueOf(i));
+        }
+
+        mainFragmentPageAdapter.isSensorOrExecutive = "executive";
+        setIsSensorOrExecutive("executive");
+        ExecutiveDeviceFragment executiveDeviceFragment =
+                (ExecutiveDeviceFragment) mainFragmentPageAdapter.instantiateItem(
+                        viewPager,
+                        2
+                );
+        executiveDeviceFragment.setExecutiveDeviceKeyByNames(testDeviceKeyByNames);
+    }
+
+    @Override
+    public void passExecutiveDeviceKeyByNamesToMain(Map<String, String> executiveDeviceKeyByNames) {
+        this.executiveDeviceKeyByNames = executiveDeviceKeyByNames;
+    }
+
+
+    //
+    //
+    //        SensorListener
+    //
+    //
+
+    @Override
+    public void createSensors() {
+        String authToken = getToken();
+
+//        if (deviceGroupProductKey != null && userGroupName != null) {
+//            getSensors(authToken, deviceGroupProductKey, userGroupName);
+//        }
+
+        Map<String, String> testSensorValuesByNames = new HashMap<>();
+        for (int i = 0; i < 350; i++) {
+            testSensorValuesByNames.put(String.valueOf(i), String.valueOf(i));
+        }
+
+        mainFragmentPageAdapter.isSensorOrExecutive = "sensor";
+        setIsSensorOrExecutive("sensor");
+
+        SensorFragment sensorFragment =
+                (SensorFragment) mainFragmentPageAdapter.instantiateItem(
+                        viewPager,
+                        2
+                );
+
+        sensorFragment.setSensorValuesByNames(testSensorValuesByNames);
+    }
+
 
     //
     //
@@ -252,43 +332,6 @@ public class MainActivity extends AppCompatActivity implements
     private void setIsSensorOrExecutive(String isSensorOrExecutive) {
         this.isSensorOrExecutive = isSensorOrExecutive;
     }
-
-    private void getUserGroups(String authToken, String deviceGroupProductKey) {
-        AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
-            @Override
-            public String createRequest(String[] params) {
-                return HttpConnectionFactory.createGetConnection(params[0], params[1]);
-            }
-
-            @Override
-            public void processFinish(String output) {
-                if (output == null) {
-                    displaySnackbar(getString(R.string.main_menu_load_failed_message));
-                } else {
-                    List<String> userGroupNames = new ArrayList<>();
-                    try {
-                        JSONArray userGroupListJson = new JSONArray(output);
-                        for (int i = 0; i < userGroupListJson.length(); i++) {
-                            userGroupNames.add(userGroupListJson.getString(i));
-                        }
-                    } catch (JSONException e) {
-                        displaySnackbar(getString(R.string.main_menu_load_failed_message));
-                        e.printStackTrace();
-                    }
-
-                    UserGroupFragment userGroupFragment =
-                            (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
-                                    viewPager,
-                                    1
-                            );
-                    userGroupFragment.setUserGroupNames(userGroupNames);
-                }
-            }
-        });
-
-        sync.execute(Constants.hubs_url + "/" + deviceGroupProductKey + "/user_groups", authToken);
-    }
-
 
     private void getDeviceGroups(String authToken) {
         AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
@@ -329,6 +372,134 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         sync.execute(Constants.hubs_url, authToken);
+    }
+
+    private void getUserGroups(String authToken, String deviceGroupProductKey) {
+        AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
+            @Override
+            public String createRequest(String[] params) {
+                return HttpConnectionFactory.createGetConnection(params[0], params[1]);
+            }
+
+            @Override
+            public void processFinish(String output) {
+                if (output == null) {
+                    displaySnackbar(getString(R.string.main_menu_load_failed_message));
+                } else {
+                    List<String> userGroupNames = new ArrayList<>();
+                    try {
+                        JSONArray userGroupListJson = new JSONArray(output);
+                        for (int i = 0; i < userGroupListJson.length(); i++) {
+                            userGroupNames.add(userGroupListJson.getString(i));
+                        }
+                    } catch (JSONException e) {
+                        displaySnackbar(getString(R.string.main_menu_load_failed_message));
+                        e.printStackTrace();
+                    }
+
+                    UserGroupFragment userGroupFragment =
+                            (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
+                                    viewPager,
+                                    1
+                            );
+                    userGroupFragment.setUserGroupNames(userGroupNames);
+                }
+            }
+        });
+
+        sync.execute(Constants.hubs_url + "/" + deviceGroupProductKey + "/user_groups", authToken);
+    }
+
+    private void getExecutiveDevices(String authToken, String deviceGroupProductKey, String userGroupName) {
+        AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
+            @Override
+            public String createRequest(String[] params) {
+                return HttpConnectionFactory.createGetConnection(params[0], params[1]);
+            }
+
+            @Override
+            public void processFinish(String output) {
+                if (output == null) {
+                    displaySnackbar(getString(R.string.main_menu_load_failed_message));
+                } else {
+                    Map<String, String> executiveDeviceKeyByNames = new HashMap<>();
+                    try {
+                        JSONArray executiveDeviceListJson = new JSONArray(output);
+                        for (int i = 0; i < executiveDeviceListJson.length(); i++) {
+                            JSONObject executiveDeviceInfoJson = executiveDeviceListJson.getJSONObject(i);
+
+                            executiveDeviceKeyByNames.put(
+                                    executiveDeviceInfoJson.getString("name"),
+                                    executiveDeviceInfoJson.getString("deviceKey")
+                            );
+                        }
+                    } catch (JSONException e) {
+                        displaySnackbar(getString(R.string.main_menu_load_failed_message));
+                        e.printStackTrace();
+                    }
+
+                    mainFragmentPageAdapter.isSensorOrExecutive = "executive";
+                    ExecutiveDeviceFragment executiveDeviceFragment =
+                            (ExecutiveDeviceFragment) mainFragmentPageAdapter.instantiateItem(
+                                    viewPager,
+                                    2
+                            );
+                    executiveDeviceFragment.setExecutiveDeviceKeyByNames(executiveDeviceKeyByNames);
+                }
+            }
+        });
+
+        String url = Constants.hubs_url + "/" + deviceGroupProductKey
+                + "/user_groups/" + userGroupName
+                + "/executive_devices";
+
+        sync.execute(url, authToken);
+    }
+
+    private void getSensors(String authToken, String deviceGroupProductKey, String userGroupName) {
+        AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
+            @Override
+            public String createRequest(String[] params) {
+                return HttpConnectionFactory.createGetConnection(params[0], params[1]);
+            }
+
+            @Override
+            public void processFinish(String output) {
+                if (output == null) {
+                    displaySnackbar(getString(R.string.main_menu_load_failed_message));
+                } else {
+                    Map<String, String> sensorValuesByNames = new HashMap<>();
+                    try {
+                        JSONArray sensorListJson = new JSONArray(output);
+                        for (int i = 0; i < sensorListJson.length(); i++) {
+                            JSONObject sensorInfoJson = sensorListJson.getJSONObject(i);
+
+                            sensorValuesByNames.put(
+                                    sensorInfoJson.getString("name"),
+                                    sensorInfoJson.getString("sensorReadingValue")
+                            );
+                        }
+                    } catch (JSONException e) {
+                        displaySnackbar(getString(R.string.main_menu_load_failed_message));
+                        e.printStackTrace();
+                    }
+
+                    mainFragmentPageAdapter.isSensorOrExecutive = "sensor";
+                    SensorFragment sensorFragment =
+                            (SensorFragment) mainFragmentPageAdapter.instantiateItem(
+                                    viewPager,
+                                    2
+                            );
+                    sensorFragment.setSensorValuesByNames(sensorValuesByNames);
+                }
+            }
+        });
+
+        String url = Constants.hubs_url + "/" + deviceGroupProductKey
+                + "/user_groups/" + userGroupName
+                + "/sensors";
+
+        sync.execute(url, authToken);
     }
 
     private void displaySnackbar(String message) {

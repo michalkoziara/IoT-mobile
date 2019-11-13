@@ -126,31 +126,18 @@ public class UserGroupFragment extends ListFragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        if (view == null) {
-            view = inflater.inflate(R.layout.fragment_user_groups, container, false);
+        view = inflater.inflate(R.layout.fragment_user_groups, container, false);
 
-            ConstraintLayout constraintLayout = (ConstraintLayout) view;
-            MaterialButton sensorButton = constraintLayout.findViewById(R.id.user_group_sensor_btn);
-            sensorButton.setOnClickListener(callback.createSensorButtonOnClickListener());
+        ConstraintLayout constraintLayout = (ConstraintLayout) view;
+        MaterialButton sensorButton = constraintLayout.findViewById(R.id.user_group_sensor_btn);
+        sensorButton.setOnClickListener(callback.createSensorButtonOnClickListener());
 
-            MaterialButton executiveButton = constraintLayout.findViewById(R.id.user_group_executive_btn);
-            executiveButton.setOnClickListener(callback.createExecutiveButtonOnClickListener());
+        MaterialButton executiveButton = constraintLayout.findViewById(R.id.user_group_executive_btn);
+        executiveButton.setOnClickListener(callback.createExecutiveButtonOnClickListener());
 
-            view.setTag("userGroupFragmentView");
-        }
+        view.setTag("userGroupFragmentView");
 
         return view;
-    }
-
-    void populateListView() {
-        callback.createUserGroups();
-        if (isAdded() && adapter == null) {
-            adapter = new UserGroupAdapter(getContext(), userGroupNames);
-            if (selectedPosition != null) {
-                adapter.setSelectedPosition(this.selectedPosition);
-            }
-            setListAdapter(adapter);
-        }
     }
 
     void setUserGroupNames(List<String> userGroupNames) {
@@ -167,7 +154,10 @@ public class UserGroupFragment extends ListFragment {
     }
 
     void resetSelectedPosition() {
-        this.selectedPosition = null;
+        if (this.selectedPosition != null) {
+            this.adapter.setSelectedPosition(null);
+            this.selectedPosition = null;
+        }
     }
 
     void setSelectedPosition(Integer selectedPosition) {
@@ -178,5 +168,16 @@ public class UserGroupFragment extends ListFragment {
         int firstListItemPosition = listView.getFirstVisiblePosition();
         int childIndex = pos - firstListItemPosition;
         return listView.getChildAt(childIndex);
+    }
+
+    private void populateListView() {
+        callback.createUserGroups();
+        if (isAdded() && adapter == null) {
+            adapter = new UserGroupAdapter(getContext(), userGroupNames);
+            if (selectedPosition != null) {
+                adapter.setSelectedPosition(this.selectedPosition);
+            }
+            setListAdapter(adapter);
+        }
     }
 }

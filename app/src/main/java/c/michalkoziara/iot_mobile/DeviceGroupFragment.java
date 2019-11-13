@@ -103,21 +103,6 @@ public class DeviceGroupFragment extends ListFragment {
         return view;
     }
 
-    void populateListView() {
-        callback.createDeviceGroups();
-        if (isAdded() && adapter == null) {
-            if (deviceGroupProductKeyByNames != null) {
-                deviceGroupNames = new ArrayList<>(deviceGroupProductKeyByNames.keySet());
-            }
-            adapter = new DeviceGroupAdapter(getContext(), deviceGroupNames);
-
-            if (selectedPosition != null) {
-                adapter.setSelectedPosition(this.selectedPosition);
-            }
-            setListAdapter(adapter);
-        }
-    }
-
     void setDeviceGroupProductKeyByNames(Map<String, String> deviceGroupProductKeyByNames) {
         this.deviceGroupProductKeyByNames = deviceGroupProductKeyByNames;
         this.deviceGroupNames.clear();
@@ -136,5 +121,20 @@ public class DeviceGroupFragment extends ListFragment {
         int firstListItemPosition = listView.getFirstVisiblePosition();
         int childIndex = pos - firstListItemPosition;
         return listView.getChildAt(childIndex);
+    }
+
+    private void populateListView() {
+        callback.createDeviceGroups();
+        if (isAdded() && adapter == null) {
+            if (deviceGroupProductKeyByNames != null) {
+                deviceGroupNames = new ArrayList<>(deviceGroupProductKeyByNames.keySet());
+            }
+            adapter = new DeviceGroupAdapter(getContext(), deviceGroupNames);
+
+            if (selectedPosition != null) {
+                adapter.setSelectedPosition(this.selectedPosition);
+            }
+            setListAdapter(adapter);
+        }
     }
 }

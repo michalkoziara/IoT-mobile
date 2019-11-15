@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
 
+import com.google.android.material.textview.MaterialTextView;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,8 @@ public class ExecutiveDeviceFragment extends ListFragment {
         void createExecutiveDevices();
 
         void passExecutiveDeviceKeyByNamesToMain(Map<String, String> executiveDeviceKeyByNames);
+
+        void openControllerActivity(String executiveDeviceName, String executiveDeviceKey);
     }
 
     @Override
@@ -49,6 +53,16 @@ public class ExecutiveDeviceFragment extends ListFragment {
     @Override
     public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
+
+        MaterialTextView materialTextView = (MaterialTextView) v;
+        String selectedExecutiveDeviceName = materialTextView.getText() != null
+                ? materialTextView.getText().toString()
+                : "";
+
+        if (executiveDeviceKeyByNames != null && executiveDeviceKeyByNames.containsKey(selectedExecutiveDeviceName)) {
+            String executiveDeviceKey = executiveDeviceKeyByNames.get(selectedExecutiveDeviceName);
+            callback.openControllerActivity(selectedExecutiveDeviceName, executiveDeviceKey);
+        }
     }
 
     @Override

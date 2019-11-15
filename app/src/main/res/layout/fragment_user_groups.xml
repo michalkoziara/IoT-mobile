@@ -27,22 +27,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@android:id/list">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/user_group_executive_btn"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggle_button_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@string/user_group_executive_btn"
-            android:visibility="gone" />
+            android:layout_margin="8dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/user_group_sensor_btn"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@string/user_group_sensor_btn"
-            android:visibility="gone" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/user_group_executive_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_group_executive_btn"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/user_group_sensor_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_group_sensor_btn"
+                android:visibility="gone" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

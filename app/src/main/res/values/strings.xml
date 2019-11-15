@@ -38,4 +38,19 @@
     <string name="user_group_executive_btn">Urządzenia"</string>
     <string name="user_group_sensor_btn">Czujniki"</string>
 
+    <string name="device_no_info">Brak informacji</string>
+    <string name="device_state">Stan:</string>
+    <string name="device_is_updated">Zsynchronizowane:</string>
+    <string name="device_is_active">Aktywne:</string>
+    <string name="device_type_name">Typ:</string>
+    <string name="device_default_state">Stan domyślny:</string>
+    <string name="device_is_formula_used">Automatyczne sterowanie:</string>
+    <string name="device_formula_name">Nazwa formuły:</string>
+    <string name="device_positive_state">Stan gdy formuła spełniona:</string>
+    <string name="device_negative_state">Stan gdy formuła niespełniona:</string>
+
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
+    <string name="none">Brak</string>
+
 </resources>

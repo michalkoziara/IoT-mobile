@@ -3,11 +3,9 @@ package c.michalkoziara.iot_mobile;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -210,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void createUserGroups() {
         String authToken = getToken();
-
+//
 //        if (deviceGroupProductKey != null) {
 //            getUserGroups(authToken, deviceGroupProductKey);
 //        }
@@ -288,23 +286,28 @@ public class MainActivity extends AppCompatActivity implements
     public void createExecutiveDevices() {
         String authToken = getToken();
 
-//        if (deviceGroupProductKey != null && userGroupName != null) {
+//        if (deviceGroupProductKey != null
+//        && userGroupName != null
+//        && isSensorOrExecutive != null
+//        && isSensorOrExecutive.equals("executive")) {
 //            getExecutiveDevices(authToken, deviceGroupProductKey, userGroupName);
 //        }
 
-        Map<String, String> testDeviceKeyByNames = new HashMap<>();
-        for (int i = 0; i < 350; i++) {
-            testDeviceKeyByNames.put(String.valueOf(i), String.valueOf(i));
-        }
+        if ((isSensorOrExecutive != null && isSensorOrExecutive.equals("executive"))) {
+            Map<String, String> testDeviceKeyByNames = new HashMap<>();
+            for (int i = 0; i < 350; i++) {
+                testDeviceKeyByNames.put(String.valueOf(i), String.valueOf(i));
+            }
 
-        mainFragmentPageAdapter.isSensorOrExecutive = "executive";
-        setIsSensorOrExecutive("executive");
-        ExecutiveDeviceFragment executiveDeviceFragment =
-                (ExecutiveDeviceFragment) mainFragmentPageAdapter.instantiateItem(
-                        viewPager,
-                        2
-                );
-        executiveDeviceFragment.setExecutiveDeviceKeyByNames(testDeviceKeyByNames);
+            mainFragmentPageAdapter.isSensorOrExecutive = "executive";
+            setIsSensorOrExecutive("executive");
+            ExecutiveDeviceFragment executiveDeviceFragment =
+                    (ExecutiveDeviceFragment) mainFragmentPageAdapter.instantiateItem(
+                            viewPager,
+                            2
+                    );
+            executiveDeviceFragment.setExecutiveDeviceKeyByNames(testDeviceKeyByNames);
+        }
     }
 
     @Override
@@ -312,6 +315,15 @@ public class MainActivity extends AppCompatActivity implements
         this.executiveDeviceKeyByNames = executiveDeviceKeyByNames;
     }
 
+    @Override
+    public void openControllerActivity(String executiveDeviceName, String executiveDeviceKey) {
+        Intent intent = new Intent(getApplicationContext(), ControllerActivity.class);
+        intent.putExtra("executiveDeviceKey", executiveDeviceKey);
+        intent.putExtra("executiveDeviceName", executiveDeviceName);
+        intent.putExtra("deviceGroupProductKey", deviceGroupProductKey);
+
+        startActivity(intent);
+    }
 
     //
     //
@@ -323,27 +335,34 @@ public class MainActivity extends AppCompatActivity implements
     public void createSensors() {
         String authToken = getToken();
 
-//        if (deviceGroupProductKey != null && userGroupName != null) {
+//        if (deviceGroupProductKey != null && userGroupName != null && isTimerOn()) {
 //            getSensors(authToken, deviceGroupProductKey, userGroupName);
 //        }
 
-        Map<String, String> testSensorValuesByNames = new HashMap<>();
-        for (int i = 0; i < 350; i++) {
-            testSensorValuesByNames.put(String.valueOf(i), String.valueOf(i));
+        if (isTimerOn()) {
+            mainFragmentPageAdapter.isSensorOrExecutive = "sensor";
+            setIsSensorOrExecutive("sensor");
+
+            SensorFragment sensorFragment =
+                    (SensorFragment) mainFragmentPageAdapter.instantiateItem(
+                            viewPager,
+                            2
+                    );
+
+            Map<String, String> testSensorValuesByNames = new HashMap<>();
+            for (int i = 0; i < 350; i++) {
+                testSensorValuesByNames.put(String.valueOf(i), String.valueOf(i));
+            }
+
+
+            sensorFragment.setSensorValuesByNames(testSensorValuesByNames);
         }
-
-        mainFragmentPageAdapter.isSensorOrExecutive = "sensor";
-        setIsSensorOrExecutive("sensor");
-
-        SensorFragment sensorFragment =
-                (SensorFragment) mainFragmentPageAdapter.instantiateItem(
-                        viewPager,
-                        2
-                );
-
-        sensorFragment.setSensorValuesByNames(testSensorValuesByNames);
     }
 
+    @Override
+    public Boolean isTimerOn() {
+        return (isSensorOrExecutive != null && isSensorOrExecutive.equals("sensor"));
+    }
 
     //
     //
@@ -429,7 +448,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        sync.execute(Constants.hubs_url + "/" + deviceGroupProductKey + "/user_groups", authToken);
+        sync.execute(Constants.hubs_url + "/" + deviceGroupProductKey + "/user-groups", authToken);
     }
 
     private void getExecutiveDevices(String authToken, String deviceGroupProductKey, String userGroupName) {
@@ -472,8 +491,8 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         String url = Constants.hubs_url + "/" + deviceGroupProductKey
-                + "/user_groups/" + userGroupName
-                + "/executive_devices";
+                + "/user-groups/" + userGroupName
+                + "/executive-devices";
 
         sync.execute(url, authToken);
     }
@@ -518,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         String url = Constants.hubs_url + "/" + deviceGroupProductKey
-                + "/user_groups/" + userGroupName
+                + "/user-groups/" + userGroupName
                 + "/sensors";
 
         sync.execute(url, authToken);

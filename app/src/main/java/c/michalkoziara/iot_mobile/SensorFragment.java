@@ -94,7 +94,7 @@ public class SensorFragment extends ListFragment {
         isTimerRunning = true;
         if (callback.isTimerOn()) {
             populateListView();
-            handler.postDelayed(runnable, 3000);
+            handler.postDelayed(runnable, 5000);
         }
     }
 

@@ -39,226 +39,393 @@
             android:fitsSystemWindows="true"
             android:visibility="invisible">
 
-            <TableLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:shrinkColumns="1">
+                android:orientation="vertical">
 
-                <TableRow
+                <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:shrinkColumns="1">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_state"
-                        android:textAlignment="viewEnd" />
+                        android:gravity="center">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/device_state"
-                        android:layout_width="wrap_content"
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_state"
+                            android:textAlignment="viewEnd" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/device_state"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_no_info"
+                            android:textAlignment="viewStart" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_no_info"
-                        android:textAlignment="viewStart" />
-                </TableRow>
+                        android:gravity="center">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_is_updated"
+                            android:textAlignment="viewEnd" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/device_is_updated"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_no_info"
+                            android:textAlignment="viewStart" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_is_updated"
-                        android:textAlignment="viewEnd" />
+                        android:gravity="center">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/device_is_updated"
-                        android:layout_width="wrap_content"
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_is_active"
+                            android:textAlignment="viewEnd" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/device_is_active"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_no_info"
+                            android:textAlignment="viewStart" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_no_info"
-                        android:textAlignment="viewStart" />
-                </TableRow>
+                        android:gravity="center">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
+                        <View style="@style/Divider" />
+                    </TableRow>
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_is_active"
-                        android:textAlignment="viewEnd" />
+                        android:gravity="center">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/device_is_active"
-                        android:layout_width="wrap_content"
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_type_name"
+                            android:textAlignment="viewEnd" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/device_type_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_no_info"
+                            android:textAlignment="viewStart" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_no_info"
-                        android:textAlignment="viewStart" />
-                </TableRow>
+                        android:gravity="center">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_default_state"
+                            android:textAlignment="viewEnd" />
 
-                    <View style="@style/Divider" />
-                </TableRow>
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/device_default_state"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_no_info"
+                            android:textAlignment="viewStart" />
+                    </TableRow>
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_type_name"
-                        android:textAlignment="viewEnd" />
+                        android:gravity="center">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/device_type_name"
-                        android:layout_width="wrap_content"
+                        <View style="@style/Divider" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_no_info"
-                        android:textAlignment="viewStart" />
-                </TableRow>
+                        android:gravity="center">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_is_formula_used"
+                            android:textAlignment="viewEnd" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/device_is_formula_used"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_no_info"
+                            android:textAlignment="viewStart" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_default_state"
-                        android:textAlignment="viewEnd" />
+                        android:gravity="center">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/device_default_state"
-                        android:layout_width="wrap_content"
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_formula_name"
+                            android:textAlignment="viewEnd" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/device_formula_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_no_info"
+                            android:textAlignment="viewStart" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_no_info"
-                        android:textAlignment="viewStart" />
-                </TableRow>
+                        android:gravity="center">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_positive_state"
+                            android:textAlignment="viewEnd" />
 
-                    <View style="@style/Divider" />
-                </TableRow>
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/device_positive_state"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_no_info"
+                            android:textAlignment="viewStart" />
+                    </TableRow>
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_is_formula_used"
-                        android:textAlignment="viewEnd" />
+                        android:gravity="center">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/device_is_formula_used"
-                        android:layout_width="wrap_content"
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_negative_state"
+                            android:textAlignment="viewEnd" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/device_negative_state"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_no_info"
+                            android:textAlignment="viewStart" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_no_info"
-                        android:textAlignment="viewStart" />
-                </TableRow>
+                        android:gravity="center">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
+                        <View style="@style/Divider" />
+                    </TableRow>
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
+                    <TableRow
+                        android:id="@+id/device_min_value_row"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_formula_name"
-                        android:textAlignment="viewEnd" />
+                        android:gravity="center"
+                        android:visibility="gone">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/device_formula_name"
-                        android:layout_width="wrap_content"
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_min_value"
+                            android:textAlignment="viewEnd" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/device_min_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_no_info"
+                            android:textAlignment="viewStart" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/device_max_value_row"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_no_info"
-                        android:textAlignment="viewStart" />
+                        android:gravity="center"
+                        android:visibility="gone">
 
-                </TableRow>
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_max_value"
+                            android:textAlignment="viewEnd" />
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/device_max_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/device_no_info"
+                            android:textAlignment="viewStart" />
+                    </TableRow>
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
+                    <TableRow
+                        android:id="@+id/device_state_input_row"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_positive_state"
-                        android:textAlignment="viewEnd" />
+                        android:gravity="center"
+                        android:visibility="gone">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/device_positive_state"
-                        android:layout_width="wrap_content"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/device_state_input_layout"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_span="2"
+                            android:hint="@string/device_state_hint">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/device_state_edit_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal|numberSigned" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/change_enum_state_row"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_no_info"
-                        android:textAlignment="viewStart" />
-                </TableRow>
+                        android:gravity="center"
+                        android:visibility="gone">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="4dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_span="2"
+                            android:hint="@string/device_state_hint">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
+                            <AutoCompleteTextView
+                                android:id="@+id/device_state_filled_exposed_dropdown"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textMultiLine"
+                                android:singleLine="false" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/change_bool_state_row"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_negative_state"
-                        android:textAlignment="viewEnd" />
+                        android:gravity="center"
+                        android:visibility="gone">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/device_negative_state"
-                        android:layout_width="wrap_content"
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/device_formula_bool_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:text="@string/device_formula_hint" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/device_state_bool_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:text="@string/device_state_hint" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/change_state_btn_row"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/device_no_info"
-                        android:textAlignment="viewStart" />
-                </TableRow>
+                        android:gravity="center"
+                        android:visibility="gone">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/device_formula_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:text="@string/device_formula_hint" />
 
-                    <View style="@style/Divider" />
-                </TableRow>
-            </TableLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/change_state_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_column="1"
+                            android:layout_gravity="end"
+                            android:enabled="false"
+                            android:text="@string/change_state_btn" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/change_state_bool_btn_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:visibility="gone">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/change_state_bool_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_column="1"
+                            android:layout_gravity="end"
+                            android:enabled="false"
+                            android:text="@string/change_state_btn" />
+                    </TableRow>
+                </TableLayout>
+            </LinearLayout>
         </ScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

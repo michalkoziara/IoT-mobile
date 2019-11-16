@@ -122,6 +122,19 @@ public class LoginActivity extends AppCompatActivity {
 
         AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
             @Override
+            public String createRequest(String[] params) {
+                JSONObject credentials = new JSONObject();
+                try {
+                    credentials.put("email", params[1]);
+                    credentials.put("password", params[2]);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return HttpConnectionFactory.createPostConnection(params[0], credentials);
+            }
+
+            @Override
             public void processFinish(String output) {
                 if (output == null) {
                     onLoginFailed();
@@ -136,19 +149,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
                 progressDialog.dismiss();
-            }
-
-            @Override
-            public String createRequest(String[] params) {
-                JSONObject credentials = new JSONObject();
-                try {
-                    credentials.put("email", params[1]);
-                    credentials.put("password", params[2]);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                return HttpConnectionFactory.createPostConnection(params[0], credentials);
             }
         });
 

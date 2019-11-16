@@ -49,6 +49,16 @@
     <string name="device_positive_state">Stan gdy formuła spełniona:</string>
     <string name="device_negative_state">Stan gdy formuła niespełniona:</string>
 
+    <string name="device_state_hint">Stan</string>
+    <string name="device_formula_hint">Automatyczne sterowanie</string>
+    <string name="change_state_btn">Aktualizuj</string>
+
+    <string name="device_min_value">Minimalny stan:</string>
+    <string name="device_max_value">Maksymalny stan:</string>
+
+    <string name="device_base_state">Podstawowy</string>
+    <string name="device_altern_state">Alternatywny</string>
+
     <string name="yes">Tak</string>
     <string name="no">Nie</string>
     <string name="none">Brak</string>

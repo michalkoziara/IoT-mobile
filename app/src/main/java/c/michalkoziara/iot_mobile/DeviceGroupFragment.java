@@ -103,6 +103,13 @@ public class DeviceGroupFragment extends ListFragment {
         return view;
     }
 
+    void resetSelectedPosition() {
+        if (this.selectedPosition != null) {
+            this.adapter.setSelectedPosition(null);
+            this.selectedPosition = null;
+        }
+    }
+
     void setDeviceGroupProductKeyByNames(Map<String, String> deviceGroupProductKeyByNames) {
         this.deviceGroupProductKeyByNames = deviceGroupProductKeyByNames;
         this.deviceGroupNames.clear();

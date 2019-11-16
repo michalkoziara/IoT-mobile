@@ -90,6 +90,45 @@ public class MainActivity extends AppCompatActivity implements
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                         }
+
+                        if (item.getItemId() == R.id.action_reload) {
+                            int currentPage = viewPager.getCurrentItem();
+
+                            if (currentPage == 0) {
+                                resetUserGroupAndIsExecutiveOrSensor();
+                                if (mainFragmentPageAdapter != null) {
+                                    DeviceGroupFragment deviceGroupFragment =
+                                            (DeviceGroupFragment) mainFragmentPageAdapter.instantiateItem(
+                                                    viewPager,
+                                                    0
+                                            );
+                                    deviceGroupFragment.resetSelectedPosition();
+
+                                    isDeviceGroupSelected = false;
+                                    mainFragmentPageAdapter.isDeviceGroupSelected = false;
+                                    mainFragmentPageAdapter.notifyDataSetChanged();
+                                }
+                                createDeviceGroups();
+                            } else if (currentPage == 1) {
+                                if (mainFragmentPageAdapter != null) {
+                                    UserGroupFragment userGroupFragment =
+                                            (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
+                                                    viewPager,
+                                                    1
+                                            );
+                                    userGroupFragment.resetSelectedPosition();
+
+                                    isSensorOrExecutive = null;
+                                    mainFragmentPageAdapter.isSensorOrExecutive = null;
+                                    mainFragmentPageAdapter.notifyDataSetChanged();
+                                }
+                                createUserGroups();
+                            } else if (currentPage == 2 && "executive".equals(isSensorOrExecutive)) {
+                                createExecutiveDevices();
+                            } else if (currentPage == 2 && "sensor".equals(isSensorOrExecutive)) {
+                                createSensors();
+                            }
+                        }
                         return false;
                     }
                 }
@@ -148,19 +187,19 @@ public class MainActivity extends AppCompatActivity implements
     public void createDeviceGroups() {
         String authToken = getToken();
 
-//        getDeviceGroups(authToken);
+        getDeviceGroups(authToken);
 
-        Map<String, String> testDeviceGroupProductKeyByNames = new HashMap<>();
-        for (int i = 0; i < 350; i++) {
-            testDeviceGroupProductKeyByNames.put(String.valueOf(i), String.valueOf(i));
-        }
-        DeviceGroupFragment deviceGroupFragment =
-                (DeviceGroupFragment) mainFragmentPageAdapter.instantiateItem(
-                        viewPager,
-                        0
-                );
-
-        deviceGroupFragment.setDeviceGroupProductKeyByNames(testDeviceGroupProductKeyByNames);
+//        Map<String, String> testDeviceGroupProductKeyByNames = new HashMap<>();
+//        for (int i = 0; i < 350; i++) {
+//            testDeviceGroupProductKeyByNames.put(String.valueOf(i), String.valueOf(i));
+//        }
+//        DeviceGroupFragment deviceGroupFragment =
+//                (DeviceGroupFragment) mainFragmentPageAdapter.instantiateItem(
+//                        viewPager,
+//                        0
+//                );
+//
+//        deviceGroupFragment.setDeviceGroupProductKeyByNames(testDeviceGroupProductKeyByNames);
     }
 
     @Override
@@ -185,18 +224,20 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void resetUserGroupAndIsExecutiveOrSensor() {
-        setIsSensorOrExecutive(null);
-        userGroupName = null;
+        if (isDeviceGroupSelected) {
+            setIsSensorOrExecutive(null);
+            userGroupName = null;
 
-        UserGroupFragment userGroupFragment =
-                (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
-                        viewPager,
-                        1
-                );
-        userGroupFragment.resetSelectedPosition();
+            UserGroupFragment userGroupFragment =
+                    (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
+                            viewPager,
+                            1
+                    );
+            userGroupFragment.resetSelectedPosition();
 
-        mainFragmentPageAdapter.isSensorOrExecutive = this.isSensorOrExecutive;
-        mainFragmentPageAdapter.notifyDataSetChanged();
+            mainFragmentPageAdapter.isSensorOrExecutive = null;
+            mainFragmentPageAdapter.notifyDataSetChanged();
+        }
     }
 
     //
@@ -208,29 +249,29 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void createUserGroups() {
         String authToken = getToken();
-//
-//        if (deviceGroupProductKey != null) {
-//            getUserGroups(authToken, deviceGroupProductKey);
+
+        if (deviceGroupProductKey != null) {
+            getUserGroups(authToken, deviceGroupProductKey);
+        }
+
+//        List<String> testUserGroups = new ArrayList<>();
+//        for (int i = 0; i < 350; i++) {
+//            testUserGroups.add(String.valueOf(i));
 //        }
-
-        List<String> testUserGroups = new ArrayList<>();
-        for (int i = 0; i < 350; i++) {
-            testUserGroups.add(String.valueOf(i));
-        }
-
-
-        if (mainFragmentPageAdapter.instantiateItem(
-                viewPager,
-                1
-        ) instanceof UserGroupFragment) {
-            UserGroupFragment userGroupFragment =
-                    (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
-                            viewPager,
-                            1
-                    );
-
-            userGroupFragment.setUserGroupNames(testUserGroups);
-        }
+//
+//
+//        if (mainFragmentPageAdapter.instantiateItem(
+//                viewPager,
+//                1
+//        ) instanceof UserGroupFragment) {
+//            UserGroupFragment userGroupFragment =
+//                    (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
+//                            viewPager,
+//                            1
+//                    );
+//
+//            userGroupFragment.setUserGroupNames(testUserGroups);
+//        }
     }
 
     @Override
@@ -286,28 +327,28 @@ public class MainActivity extends AppCompatActivity implements
     public void createExecutiveDevices() {
         String authToken = getToken();
 
-//        if (deviceGroupProductKey != null
-//        && userGroupName != null
-//        && isSensorOrExecutive != null
-//        && isSensorOrExecutive.equals("executive")) {
-//            getExecutiveDevices(authToken, deviceGroupProductKey, userGroupName);
-//        }
-
-        if ((isSensorOrExecutive != null && isSensorOrExecutive.equals("executive"))) {
-            Map<String, String> testDeviceKeyByNames = new HashMap<>();
-            for (int i = 0; i < 350; i++) {
-                testDeviceKeyByNames.put(String.valueOf(i), String.valueOf(i));
-            }
-
-            mainFragmentPageAdapter.isSensorOrExecutive = "executive";
-            setIsSensorOrExecutive("executive");
-            ExecutiveDeviceFragment executiveDeviceFragment =
-                    (ExecutiveDeviceFragment) mainFragmentPageAdapter.instantiateItem(
-                            viewPager,
-                            2
-                    );
-            executiveDeviceFragment.setExecutiveDeviceKeyByNames(testDeviceKeyByNames);
+        if (deviceGroupProductKey != null
+                && userGroupName != null
+                && isSensorOrExecutive != null
+                && isSensorOrExecutive.equals("executive")) {
+            getExecutiveDevices(authToken, deviceGroupProductKey, userGroupName);
         }
+
+//        if ((isSensorOrExecutive != null && isSensorOrExecutive.equals("executive"))) {
+//            Map<String, String> testDeviceKeyByNames = new HashMap<>();
+//            for (int i = 0; i < 350; i++) {
+//                testDeviceKeyByNames.put(String.valueOf(i), String.valueOf(i));
+//            }
+//
+//            mainFragmentPageAdapter.isSensorOrExecutive = "executive";
+//            setIsSensorOrExecutive("executive");
+//            ExecutiveDeviceFragment executiveDeviceFragment =
+//                    (ExecutiveDeviceFragment) mainFragmentPageAdapter.instantiateItem(
+//                            viewPager,
+//                            2
+//                    );
+//            executiveDeviceFragment.setExecutiveDeviceKeyByNames(testDeviceKeyByNames);
+//        }
     }
 
     @Override
@@ -335,28 +376,28 @@ public class MainActivity extends AppCompatActivity implements
     public void createSensors() {
         String authToken = getToken();
 
-//        if (deviceGroupProductKey != null && userGroupName != null && isTimerOn()) {
-//            getSensors(authToken, deviceGroupProductKey, userGroupName);
-//        }
-
-        if (isTimerOn()) {
-            mainFragmentPageAdapter.isSensorOrExecutive = "sensor";
-            setIsSensorOrExecutive("sensor");
-
-            SensorFragment sensorFragment =
-                    (SensorFragment) mainFragmentPageAdapter.instantiateItem(
-                            viewPager,
-                            2
-                    );
-
-            Map<String, String> testSensorValuesByNames = new HashMap<>();
-            for (int i = 0; i < 350; i++) {
-                testSensorValuesByNames.put(String.valueOf(i), String.valueOf(i));
-            }
-
-
-            sensorFragment.setSensorValuesByNames(testSensorValuesByNames);
+        if (deviceGroupProductKey != null && userGroupName != null && isTimerOn()) {
+            getSensors(authToken, deviceGroupProductKey, userGroupName);
         }
+
+//        if (isTimerOn()) {
+//            mainFragmentPageAdapter.isSensorOrExecutive = "sensor";
+//            setIsSensorOrExecutive("sensor");
+//
+//            SensorFragment sensorFragment =
+//                    (SensorFragment) mainFragmentPageAdapter.instantiateItem(
+//                            viewPager,
+//                            2
+//                    );
+//
+//            Map<String, String> testSensorValuesByNames = new HashMap<>();
+//            for (int i = 0; i < 350; i++) {
+//                testSensorValuesByNames.put(String.valueOf(i), String.valueOf(i));
+//            }
+//
+//
+//            sensorFragment.setSensorValuesByNames(testSensorValuesByNames);
+//        }
     }
 
     @Override
@@ -438,12 +479,15 @@ public class MainActivity extends AppCompatActivity implements
                         e.printStackTrace();
                     }
 
-                    UserGroupFragment userGroupFragment =
-                            (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
-                                    viewPager,
-                                    1
-                            );
-                    userGroupFragment.setUserGroupNames(userGroupNames);
+                    if (mainFragmentPageAdapter != null
+                            && mainFragmentPageAdapter.isDeviceGroupSelected) {
+                        UserGroupFragment userGroupFragment =
+                                (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
+                                        viewPager,
+                                        1
+                                );
+                        userGroupFragment.setUserGroupNames(userGroupNames);
+                    }
                 }
             }
         });
@@ -479,13 +523,15 @@ public class MainActivity extends AppCompatActivity implements
                         e.printStackTrace();
                     }
 
-                    mainFragmentPageAdapter.isSensorOrExecutive = "executive";
-                    ExecutiveDeviceFragment executiveDeviceFragment =
-                            (ExecutiveDeviceFragment) mainFragmentPageAdapter.instantiateItem(
-                                    viewPager,
-                                    2
-                            );
-                    executiveDeviceFragment.setExecutiveDeviceKeyByNames(executiveDeviceKeyByNames);
+                    if ("executive".equals(mainFragmentPageAdapter.isSensorOrExecutive)) {
+                        mainFragmentPageAdapter.isSensorOrExecutive = "executive";
+                        ExecutiveDeviceFragment executiveDeviceFragment =
+                                (ExecutiveDeviceFragment) mainFragmentPageAdapter.instantiateItem(
+                                        viewPager,
+                                        2
+                                );
+                        executiveDeviceFragment.setExecutiveDeviceKeyByNames(executiveDeviceKeyByNames);
+                    }
                 }
             }
         });
@@ -525,13 +571,15 @@ public class MainActivity extends AppCompatActivity implements
                         e.printStackTrace();
                     }
 
-                    mainFragmentPageAdapter.isSensorOrExecutive = "sensor";
-                    SensorFragment sensorFragment =
-                            (SensorFragment) mainFragmentPageAdapter.instantiateItem(
-                                    viewPager,
-                                    2
-                            );
-                    sensorFragment.setSensorValuesByNames(sensorValuesByNames);
+                    if ("sensor".equals(mainFragmentPageAdapter.isSensorOrExecutive)) {
+                        mainFragmentPageAdapter.isSensorOrExecutive = "sensor";
+                        SensorFragment sensorFragment =
+                                (SensorFragment) mainFragmentPageAdapter.instantiateItem(
+                                        viewPager,
+                                        2
+                                );
+                        sensorFragment.setSensorValuesByNames(sensorValuesByNames);
+                    }
                 }
             }
         });

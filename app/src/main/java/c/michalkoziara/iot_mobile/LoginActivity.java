@@ -39,6 +39,12 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        DBManager dbManager = new DBManager(this);
+        dbManager.open();
+        dbManager.deleteUserGroups();
+        dbManager.deleteDeviceGroups();
+        dbManager.close();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">IoT-mobile</string>
+    <string name="app_name">IoT mobile</string>
     <string name="logo_description">IoT mobile logo</string>
 
     <string name="create_account_link">Nie masz konta? Stwórz nowe</string>

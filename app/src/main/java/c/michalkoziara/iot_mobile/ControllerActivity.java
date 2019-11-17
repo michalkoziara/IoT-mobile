@@ -3,12 +3,16 @@ package c.michalkoziara.iot_mobile;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -59,13 +63,35 @@ public class ControllerActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
+            TransitionInflater transitionInflater = TransitionInflater.from(this);
+            Transition transition = transitionInflater.inflateTransition(R.transition.transition_controller);
+
+            getWindow().setEnterTransition(transition);
+            getWindow().setReturnTransition(transition);
+        }
+
         setContentView(R.layout.activity_controller);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            findViewById(R.id.bottom_controller_frame).setTransitionName("frame_layout");
+        }
 
         Toolbar toolbar = findViewById(R.id.controller_toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                findViewById(R.id.change_enum_state_row).setVisibility(View.GONE);
+                findViewById(R.id.change_bool_state_row).setVisibility(View.GONE);
+                findViewById(R.id.device_state_input_row).setVisibility(View.GONE);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    finishAfterTransition();
+                } else {
+                    finish();
+                }
             }
         });
 

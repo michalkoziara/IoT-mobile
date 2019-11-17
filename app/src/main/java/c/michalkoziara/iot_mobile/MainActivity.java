@@ -1,9 +1,13 @@
 package c.michalkoziara.iot_mobile;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements
 
     Map<String, String> executiveDeviceKeyByNames;
 
+    Boolean isCurrentlyReloading = false;
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -93,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements
 
                         if (item.getItemId() == R.id.action_reload) {
                             int currentPage = viewPager.getCurrentItem();
+                            isCurrentlyReloading = true;
 
                             if (currentPage == 0) {
                                 resetUserGroupAndIsExecutiveOrSensor();
@@ -108,6 +114,12 @@ public class MainActivity extends AppCompatActivity implements
                                     mainFragmentPageAdapter.isDeviceGroupSelected = false;
                                     mainFragmentPageAdapter.notifyDataSetChanged();
                                 }
+                                DBManager dbManager = new DBManager(MainActivity.this);
+                                dbManager.open();
+                                dbManager.deleteUserGroups();
+                                dbManager.deleteDeviceGroups();
+                                dbManager.close();
+
                                 createDeviceGroups();
                             } else if (currentPage == 1) {
                                 if (mainFragmentPageAdapter != null) {
@@ -122,12 +134,19 @@ public class MainActivity extends AppCompatActivity implements
                                     mainFragmentPageAdapter.isSensorOrExecutive = null;
                                     mainFragmentPageAdapter.notifyDataSetChanged();
                                 }
+                                DBManager dbManager = new DBManager(MainActivity.this);
+                                dbManager.open();
+                                dbManager.deleteUserGroups();
+                                dbManager.close();
+
                                 createUserGroups();
                             } else if (currentPage == 2 && "executive".equals(isSensorOrExecutive)) {
                                 createExecutiveDevices();
                             } else if (currentPage == 2 && "sensor".equals(isSensorOrExecutive)) {
                                 createSensors();
                             }
+
+                            isCurrentlyReloading = false;
                         }
                         return false;
                     }
@@ -188,18 +207,6 @@ public class MainActivity extends AppCompatActivity implements
         String authToken = getToken();
 
         getDeviceGroups(authToken);
-
-//        Map<String, String> testDeviceGroupProductKeyByNames = new HashMap<>();
-//        for (int i = 0; i < 350; i++) {
-//            testDeviceGroupProductKeyByNames.put(String.valueOf(i), String.valueOf(i));
-//        }
-//        DeviceGroupFragment deviceGroupFragment =
-//                (DeviceGroupFragment) mainFragmentPageAdapter.instantiateItem(
-//                        viewPager,
-//                        0
-//                );
-//
-//        deviceGroupFragment.setDeviceGroupProductKeyByNames(testDeviceGroupProductKeyByNames);
     }
 
     @Override
@@ -253,25 +260,6 @@ public class MainActivity extends AppCompatActivity implements
         if (deviceGroupProductKey != null) {
             getUserGroups(authToken, deviceGroupProductKey);
         }
-
-//        List<String> testUserGroups = new ArrayList<>();
-//        for (int i = 0; i < 350; i++) {
-//            testUserGroups.add(String.valueOf(i));
-//        }
-//
-//
-//        if (mainFragmentPageAdapter.instantiateItem(
-//                viewPager,
-//                1
-//        ) instanceof UserGroupFragment) {
-//            UserGroupFragment userGroupFragment =
-//                    (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
-//                            viewPager,
-//                            1
-//                    );
-//
-//            userGroupFragment.setUserGroupNames(testUserGroups);
-//        }
     }
 
     @Override
@@ -333,22 +321,6 @@ public class MainActivity extends AppCompatActivity implements
                 && isSensorOrExecutive.equals("executive")) {
             getExecutiveDevices(authToken, deviceGroupProductKey, userGroupName);
         }
-
-//        if ((isSensorOrExecutive != null && isSensorOrExecutive.equals("executive"))) {
-//            Map<String, String> testDeviceKeyByNames = new HashMap<>();
-//            for (int i = 0; i < 350; i++) {
-//                testDeviceKeyByNames.put(String.valueOf(i), String.valueOf(i));
-//            }
-//
-//            mainFragmentPageAdapter.isSensorOrExecutive = "executive";
-//            setIsSensorOrExecutive("executive");
-//            ExecutiveDeviceFragment executiveDeviceFragment =
-//                    (ExecutiveDeviceFragment) mainFragmentPageAdapter.instantiateItem(
-//                            viewPager,
-//                            2
-//                    );
-//            executiveDeviceFragment.setExecutiveDeviceKeyByNames(testDeviceKeyByNames);
-//        }
     }
 
     @Override
@@ -363,7 +335,19 @@ public class MainActivity extends AppCompatActivity implements
         intent.putExtra("executiveDeviceName", executiveDeviceName);
         intent.putExtra("deviceGroupProductKey", deviceGroupProductKey);
 
-        startActivity(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            findViewById(R.id.frame_layout).setTransitionName("frame_layout");
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                    MainActivity.this,
+                    Pair.create(findViewById(R.id.frame_layout), "frame_layout")
+            );
+            startActivity(intent, options.toBundle());
+        } else {
+            startActivity(intent);
+        }
     }
 
     //
@@ -379,25 +363,6 @@ public class MainActivity extends AppCompatActivity implements
         if (deviceGroupProductKey != null && userGroupName != null && isTimerOn()) {
             getSensors(authToken, deviceGroupProductKey, userGroupName);
         }
-
-//        if (isTimerOn()) {
-//            mainFragmentPageAdapter.isSensorOrExecutive = "sensor";
-//            setIsSensorOrExecutive("sensor");
-//
-//            SensorFragment sensorFragment =
-//                    (SensorFragment) mainFragmentPageAdapter.instantiateItem(
-//                            viewPager,
-//                            2
-//                    );
-//
-//            Map<String, String> testSensorValuesByNames = new HashMap<>();
-//            for (int i = 0; i < 350; i++) {
-//                testSensorValuesByNames.put(String.valueOf(i), String.valueOf(i));
-//            }
-//
-//
-//            sensorFragment.setSensorValuesByNames(testSensorValuesByNames);
-//        }
     }
 
     @Override
@@ -416,83 +381,220 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void getDeviceGroups(String authToken) {
-        AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
-            @Override
-            public String createRequest(String[] params) {
-                return HttpConnectionFactory.createGetConnection(params[0], params[1]);
+        DBManager dbManager = new DBManager(this);
+        dbManager.open();
+
+        Cursor cursor = dbManager.fetchDeviceGroup();
+        if (!isCurrentlyReloading && cursor != null && cursor.getCount() > 0) {
+            Map<String, String> deviceGroupProductKeyByNames = new HashMap<>();
+
+            cursor.moveToFirst();
+
+            String product_key = cursor.getString(cursor.getColumnIndex("product_key"));
+            String name = cursor.getString(cursor.getColumnIndex("name"));
+
+            deviceGroupProductKeyByNames.put(name, product_key);
+            cursor.moveToNext();
+
+            while (!cursor.isAfterLast()) {
+                name = cursor.getString(cursor.getColumnIndex("name"));
+                product_key = cursor.getString(cursor.getColumnIndex("product_key"));
+
+                deviceGroupProductKeyByNames.put(name, product_key);
+                cursor.moveToNext();
             }
 
-            @Override
-            public void processFinish(String output) {
-                if (output == null) {
-                    displaySnackbar(getString(R.string.main_menu_load_failed_message));
-                } else {
-                    Map<String, String> deviceGroupProductKeyByNames = new HashMap<>();
-                    try {
-                        JSONArray deviceGroupListJson = new JSONArray(output);
-                        for (int i = 0; i < deviceGroupListJson.length(); i++) {
-                            JSONObject deviceGroupInfoJson = deviceGroupListJson.getJSONObject(i);
+            cursor.close();
+            dbManager.close();
 
-                            deviceGroupProductKeyByNames.put(
-                                    deviceGroupInfoJson.getString("name"),
-                                    deviceGroupInfoJson.getString("productKey")
-                            );
-                        }
-                    } catch (JSONException e) {
-                        displaySnackbar(getString(R.string.main_menu_load_failed_message));
-                        e.printStackTrace();
-                    }
+            DeviceGroupFragment deviceGroupFragment =
+                    (DeviceGroupFragment) mainFragmentPageAdapter.instantiateItem(
+                            viewPager,
+                            0
+                    );
+            deviceGroupFragment.setDeviceGroupProductKeyByNames(deviceGroupProductKeyByNames);
+        } else {
+            if (cursor != null) {
+                cursor.close();
+            }
+            dbManager.close();
 
-                    DeviceGroupFragment deviceGroupFragment =
-                            (DeviceGroupFragment) mainFragmentPageAdapter.instantiateItem(
-                                    viewPager,
-                                    0
-                            );
-                    deviceGroupFragment.setDeviceGroupProductKeyByNames(deviceGroupProductKeyByNames);
+            AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
+                @Override
+                public String createRequest(String[] params) {
+                    return HttpConnectionFactory.createGetConnection(params[0], params[1]);
                 }
-            }
-        });
 
-        sync.execute(Constants.hubs_url, authToken);
+                @Override
+                public void processFinish(String output) {
+                    if (output == null) {
+                        displaySnackbar(getString(R.string.main_menu_load_failed_message));
+                    } else {
+                        Map<String, String> deviceGroupProductKeyByNames = new HashMap<>();
+                        try {
+                            JSONArray deviceGroupListJson = new JSONArray(output);
+                            for (int i = 0; i < deviceGroupListJson.length(); i++) {
+                                JSONObject deviceGroupInfoJson = deviceGroupListJson.getJSONObject(i);
+
+                                deviceGroupProductKeyByNames.put(
+                                        deviceGroupInfoJson.getString("name"),
+                                        deviceGroupInfoJson.getString("productKey")
+                                );
+                            }
+                        } catch (JSONException e) {
+                            displaySnackbar(getString(R.string.main_menu_load_failed_message));
+                            e.printStackTrace();
+                        }
+
+                        DBManager dbManager = new DBManager(MainActivity.this);
+                        dbManager.open();
+
+                        Cursor cursor = dbManager.fetchDeviceGroup();
+                        if (cursor == null || cursor.getCount() == 0) {
+                            if (cursor != null) {
+                                cursor.close();
+                            }
+
+                            for (Map.Entry<String, String> entry : deviceGroupProductKeyByNames.entrySet()) {
+                                String name = entry.getKey();
+                                String product_key = entry.getValue();
+
+                                dbManager.insertDeviceGroup(product_key, name);
+                            }
+                        }
+                        dbManager.close();
+
+                        DeviceGroupFragment deviceGroupFragment =
+                                (DeviceGroupFragment) mainFragmentPageAdapter.instantiateItem(
+                                        viewPager,
+                                        0
+                                );
+                        deviceGroupFragment.setDeviceGroupProductKeyByNames(deviceGroupProductKeyByNames);
+                    }
+                }
+            });
+
+            sync.execute(Constants.hubs_url, authToken);
+        }
     }
 
-    private void getUserGroups(String authToken, String deviceGroupProductKey) {
-        AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
-            @Override
-            public String createRequest(String[] params) {
-                return HttpConnectionFactory.createGetConnection(params[0], params[1]);
+    private void getUserGroups(String authToken, final String deviceGroupProductKey) {
+        DBManager dbManager = new DBManager(this);
+        dbManager.open();
+
+        Cursor cursorDeviceGroups = dbManager.fetchDeviceGroupByProductKey(deviceGroupProductKey);
+        Long deviceGroupId = null;
+        if (cursorDeviceGroups != null && cursorDeviceGroups.getCount() > 0) {
+            cursorDeviceGroups.moveToFirst();
+
+            deviceGroupId = cursorDeviceGroups.getLong(cursorDeviceGroups.getColumnIndex("_id"));
+            cursorDeviceGroups.close();
+        }
+
+        Cursor cursorUserGroups = null;
+        if (deviceGroupId != null) {
+            cursorUserGroups = dbManager.fetchUserGroupByDeviceGroupId(deviceGroupId);
+        }
+
+        if (!isCurrentlyReloading && cursorUserGroups != null && cursorUserGroups.getCount() > 0) {
+            List<String> userGroupNames = new ArrayList<>();
+
+            cursorUserGroups.moveToFirst();
+
+            String name = cursorUserGroups.getString(cursorUserGroups.getColumnIndex("name"));
+            userGroupNames.add(name);
+
+            cursorUserGroups.moveToNext();
+
+            while (!cursorUserGroups.isAfterLast()) {
+                name = cursorUserGroups.getString(cursorUserGroups.getColumnIndex("name"));
+                userGroupNames.add(name);
+                cursorUserGroups.moveToNext();
             }
 
-            @Override
-            public void processFinish(String output) {
-                if (output == null) {
-                    displaySnackbar(getString(R.string.main_menu_load_failed_message));
-                } else {
-                    List<String> userGroupNames = new ArrayList<>();
-                    try {
-                        JSONArray userGroupListJson = new JSONArray(output);
-                        for (int i = 0; i < userGroupListJson.length(); i++) {
-                            userGroupNames.add(userGroupListJson.getString(i));
-                        }
-                    } catch (JSONException e) {
-                        displaySnackbar(getString(R.string.main_menu_load_failed_message));
-                        e.printStackTrace();
-                    }
+            cursorUserGroups.close();
+            dbManager.close();
 
-                    if (mainFragmentPageAdapter != null
-                            && mainFragmentPageAdapter.isDeviceGroupSelected) {
-                        UserGroupFragment userGroupFragment =
-                                (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
-                                        viewPager,
-                                        1
-                                );
-                        userGroupFragment.setUserGroupNames(userGroupNames);
+            if (mainFragmentPageAdapter != null
+                    && mainFragmentPageAdapter.isDeviceGroupSelected) {
+                UserGroupFragment userGroupFragment =
+                        (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
+                                viewPager,
+                                1
+                        );
+                userGroupFragment.setUserGroupNames(userGroupNames);
+            }
+        } else {
+            if (cursorUserGroups != null) {
+                cursorUserGroups.close();
+            }
+            dbManager.close();
+
+            AsyncSync sync = new AsyncSync(new AsyncSync.AsyncResponse() {
+                @Override
+                public String createRequest(String[] params) {
+                    return HttpConnectionFactory.createGetConnection(params[0], params[1]);
+                }
+
+                @Override
+                public void processFinish(String output) {
+                    if (output == null) {
+                        displaySnackbar(getString(R.string.main_menu_load_failed_message));
+                    } else {
+                        List<String> userGroupNames = new ArrayList<>();
+                        try {
+                            JSONArray userGroupListJson = new JSONArray(output);
+                            for (int i = 0; i < userGroupListJson.length(); i++) {
+                                userGroupNames.add(userGroupListJson.getString(i));
+                            }
+                        } catch (JSONException e) {
+                            displaySnackbar(getString(R.string.main_menu_load_failed_message));
+                            e.printStackTrace();
+                        }
+
+                        DBManager dbManager = new DBManager(MainActivity.this);
+                        dbManager.open();
+
+                        Cursor cursorDeviceGroups = dbManager.fetchDeviceGroupByProductKey(deviceGroupProductKey);
+                        Long deviceGroupId = null;
+                        if (cursorDeviceGroups != null && cursorDeviceGroups.getCount() > 0) {
+                            cursorDeviceGroups.moveToFirst();
+
+                            deviceGroupId = cursorDeviceGroups.getLong(cursorDeviceGroups.getColumnIndex("_id"));
+                            cursorDeviceGroups.close();
+                        }
+
+                        Cursor cursorUserGroups = null;
+                        if (deviceGroupId != null) {
+                            cursorUserGroups = dbManager.fetchUserGroupByDeviceGroupId(deviceGroupId);
+                        }
+
+                        if (deviceGroupId != null && (cursorUserGroups == null || cursorUserGroups.getCount() == 0)) {
+                            if (cursorUserGroups != null) {
+                                cursorUserGroups.close();
+                            }
+
+                            for (String userGroupName : userGroupNames) {
+                                dbManager.insertUserGroup(userGroupName, deviceGroupId);
+                            }
+                        }
+                        dbManager.close();
+
+                        if (mainFragmentPageAdapter != null
+                                && mainFragmentPageAdapter.isDeviceGroupSelected) {
+                            UserGroupFragment userGroupFragment =
+                                    (UserGroupFragment) mainFragmentPageAdapter.instantiateItem(
+                                            viewPager,
+                                            1
+                                    );
+                            userGroupFragment.setUserGroupNames(userGroupNames);
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        sync.execute(Constants.hubs_url + "/" + deviceGroupProductKey + "/user-groups", authToken);
+            sync.execute(Constants.hubs_url + "/" + deviceGroupProductKey + "/user-groups", authToken);
+        }
     }
 
     private void getExecutiveDevices(String authToken, String deviceGroupProductKey, String userGroupName) {

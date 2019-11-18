@@ -278,7 +278,7 @@ public class ControllerActivity extends AppCompatActivity {
             MaterialTextView infoText = findViewById(R.id.device_state);
             if (infoText != null && deviceInfo.get("state") != null) {
                 if (deviceInfo.get("state").equals(true)) {
-                    infoText.setText(getString(R.string.device_base_state));
+                    infoText.setText(getString(R.string.device_altern_state));
                 } else if (deviceInfo.get("state").equals(false)) {
                     infoText.setText(getString(R.string.device_base_state));
                 } else {

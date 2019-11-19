@@ -31,6 +31,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
 
 import org.json.JSONArray;
@@ -465,6 +466,12 @@ public class ControllerActivity extends AppCompatActivity {
                     if (deviceInfo.get("state") != null && deviceInfo.get("state") instanceof Double) {
                         textInputEditText.setText(String.valueOf(deviceInfo.get("state")));
 
+                        if (lastIsFormulaUsed) {
+                            textInputEditText.setEnabled(false);
+                        } else {
+                            textInputEditText.setEnabled(true);
+                        }
+
                         textInputEditText.addTextChangedListener(
                                 new TextWatcher() {
                                     @Override
@@ -537,14 +544,32 @@ public class ControllerActivity extends AppCompatActivity {
                                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                             MaterialButton updateBtn = findViewById(R.id.change_state_btn);
 
+                                            TextInputEditText textInputEditText = findViewById(R.id.device_state_edit_text);
+
+                                            if (textInputEditText != null) {
+                                                if (isChecked) {
+                                                    textInputEditText.setEnabled(false);
+                                                } else {
+                                                    textInputEditText.setEnabled(true);
+                                                }
+                                            }
+
                                             if (getLastIsFormulaUsed() != isChecked) {
                                                 updateBtn.setEnabled(true);
                                                 newIsFormulaUsed = isChecked;
-                                            } else if (newState == null) {
+
+                                                if (textInputEditText != null) {
+                                                    textInputEditText.setText(String.valueOf(lastState));
+                                                    newState = null;
+                                                }
+                                            } else {
                                                 updateBtn.setEnabled(false);
                                                 newIsFormulaUsed = null;
-                                            } else {
-                                                newIsFormulaUsed = null;
+
+                                                if (textInputEditText != null) {
+                                                    textInputEditText.setText(String.valueOf(lastState));
+                                                    newState = null;
+                                                }
                                             }
                                         }
                                     }
@@ -577,6 +602,15 @@ public class ControllerActivity extends AppCompatActivity {
 
                     AutoCompleteTextView editTextFilledExposedDropdown =
                             findViewById(R.id.device_state_filled_exposed_dropdown);
+                    TextInputLayout textInputLayout = findViewById(R.id.device_state_text_input_dropdown);
+
+                    if (lastIsFormulaUsed) {
+                        editTextFilledExposedDropdown.setEnabled(false);
+                        textInputLayout.setEnabled(false);
+                    } else {
+                        editTextFilledExposedDropdown.setEnabled(true);
+                        textInputLayout.setEnabled(true);
+                    }
 
                     if (editTextFilledExposedDropdown != null) {
                         if (deviceInfo.get("state") != null && deviceInfo.get("state") instanceof String) {
@@ -605,14 +639,39 @@ public class ControllerActivity extends AppCompatActivity {
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                         MaterialButton updateBtn = findViewById(R.id.change_state_btn);
 
+                                        AutoCompleteTextView editTextFilledExposedDropdown =
+                                                findViewById(R.id.device_state_filled_exposed_dropdown);
+                                        TextInputLayout textInputLayout = findViewById(R.id.device_state_text_input_dropdown);
+
+                                        if (editTextFilledExposedDropdown != null
+                                                && textInputLayout != null) {
+                                            if (isChecked) {
+                                                editTextFilledExposedDropdown.setEnabled(false);
+                                                textInputLayout.setEnabled(false);
+                                            } else {
+                                                editTextFilledExposedDropdown.setEnabled(true);
+                                                textInputLayout.setEnabled(true);
+                                            }
+                                        }
+
                                         if (getLastIsFormulaUsed() != isChecked) {
                                             updateBtn.setEnabled(true);
                                             newIsFormulaUsed = isChecked;
-                                        } else if (newState == null) {
+
+                                            if (editTextFilledExposedDropdown != null
+                                                    && textInputLayout != null) {
+                                                editTextFilledExposedDropdown.setText((String) lastState, false);
+                                                newState = null;
+                                            }
+                                        } else {
                                             updateBtn.setEnabled(false);
                                             newIsFormulaUsed = null;
-                                        } else {
-                                            newIsFormulaUsed = null;
+
+                                            if (editTextFilledExposedDropdown != null
+                                                    && textInputLayout != null) {
+                                                editTextFilledExposedDropdown.setText((String) lastState, false);
+                                                newState = null;
+                                            }
                                         }
                                     }
                                 }
@@ -637,6 +696,12 @@ public class ControllerActivity extends AppCompatActivity {
                         if (deviceInfo.get("state") != null && deviceInfo.get("state") instanceof Boolean) {
                             state = (Boolean) deviceInfo.get("state");
                             stateSwitch.setChecked(state);
+                        }
+
+                        if (lastIsFormulaUsed) {
+                            stateSwitch.setEnabled(false);
+                        } else {
+                            stateSwitch.setEnabled(true);
                         }
 
                         stateSwitch.setOnCheckedChangeListener(
@@ -679,15 +744,32 @@ public class ControllerActivity extends AppCompatActivity {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                         MaterialButton updateBtn = findViewById(R.id.change_state_btn);
+                                        SwitchMaterial stateSwitch = findViewById(R.id.device_state_bool_switch);
+
+                                        if (stateSwitch != null) {
+                                            if (isChecked) {
+                                                stateSwitch.setEnabled(false);
+                                            } else {
+                                                stateSwitch.setEnabled(true);
+                                            }
+                                        }
 
                                         if (getLastIsFormulaUsed() != isChecked) {
                                             updateBtn.setEnabled(true);
                                             newIsFormulaUsed = isChecked;
-                                        } else if (newState == null) {
+
+                                            if (stateSwitch != null) {
+                                                stateSwitch.setChecked((Boolean) lastState);
+                                                newState = null;
+                                            }
+                                        } else {
                                             updateBtn.setEnabled(false);
                                             newIsFormulaUsed = null;
-                                        } else {
-                                            newIsFormulaUsed = null;
+
+                                            if (stateSwitch != null) {
+                                                stateSwitch.setChecked((Boolean) lastState);
+                                                newState = null;
+                                            }
                                         }
                                     }
                                 }

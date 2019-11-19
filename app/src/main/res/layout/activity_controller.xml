@@ -351,6 +351,7 @@
                         android:visibility="gone">
 
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/device_state_text_input_dropdown"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

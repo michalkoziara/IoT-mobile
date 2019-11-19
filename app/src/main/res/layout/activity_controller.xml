@@ -183,6 +183,14 @@
                             android:text="@string/device_is_formula_used"
                             android:textAlignment="viewEnd" />
 
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/device_formula_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:checked="false"
+                            android:visibility="gone" />
+
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/device_is_formula_used"
                             android:layout_width="wrap_content"
@@ -369,19 +377,20 @@
                         android:gravity="center"
                         android:visibility="gone">
 
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/device_formula_bool_switch"
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:checked="false"
-                            android:text="@string/device_formula_hint" />
+                            android:layout_margin="8dp"
+                            android:text="@string/device_state"
+                            android:textAlignment="viewEnd" />
 
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/device_state_bool_switch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:checked="false"
-                            android:text="@string/device_state_hint" />
+                            android:layout_column="1"
+                            android:layout_gravity="start"
+                            android:checked="false" />
                     </TableRow>
 
                     <TableRow
@@ -391,36 +400,12 @@
                         android:gravity="center"
                         android:visibility="gone">
 
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/device_formula_switch"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="false"
-                            android:text="@string/device_formula_hint" />
-
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/change_state_btn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_column="1"
                             android:layout_gravity="end"
-                            android:enabled="false"
-                            android:text="@string/change_state_btn" />
-                    </TableRow>
-
-                    <TableRow
-                        android:id="@+id/change_state_bool_btn_row"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:visibility="gone">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/change_state_bool_btn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_column="1"
-                            android:layout_gravity="end"
+                            android:layout_span="2"
                             android:enabled="false"
                             android:text="@string/change_state_btn" />
                     </TableRow>

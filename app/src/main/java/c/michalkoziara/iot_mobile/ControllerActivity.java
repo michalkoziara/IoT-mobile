@@ -19,6 +19,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.ScrollView;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -288,7 +289,6 @@ public class ControllerActivity extends AppCompatActivity {
                 setLastState(deviceInfo.get("state"));
 
                 findViewById(R.id.change_state_btn).setEnabled(false);
-                findViewById(R.id.change_state_bool_btn).setEnabled(false);
                 findViewById(R.id.device_state_filled_exposed_dropdown).clearFocus();
             }
 
@@ -297,9 +297,9 @@ public class ControllerActivity extends AppCompatActivity {
                 Boolean isUpdated = (Boolean) deviceInfo.get("isUpdated");
 
                 if (isUpdated) {
-                    infoText.setText(getString(R.string.yes));
-                } else {
                     infoText.setText(getString(R.string.no));
+                } else {
+                    infoText.setText(getString(R.string.yes));
                 }
             }
 
@@ -519,8 +519,14 @@ public class ControllerActivity extends AppCompatActivity {
 
                         SwitchMaterial formulaSwitch = findViewById(R.id.device_formula_switch);
                         if (formulaSwitch != null) {
+                            TextView deviceIsFormulaUsed = findViewById(R.id.device_is_formula_used);
+                            if (deviceIsFormulaUsed != null) {
+                                deviceIsFormulaUsed.setVisibility(View.GONE);
+                            }
+
+                            formulaSwitch.setVisibility(View.VISIBLE);
                             if (deviceInfo.get("formulaName") == null) {
-                                formulaSwitch.setVisibility(View.INVISIBLE);
+                                formulaSwitch.setEnabled(false);
                             }
 
                             formulaSwitch.setChecked(getLastIsFormulaUsed());
@@ -563,7 +569,8 @@ public class ControllerActivity extends AppCompatActivity {
                 }
 
                 if (typeInfo.get("stateType").equals("Enum")
-                        && typeInfo.get("enumerator") != null) {
+                        && typeInfo.get("enumerator") != null
+                        && typeInfo.get("enumerator") instanceof List) {
                     List<String> enumerators = (List<String>) typeInfo.get("enumerator");
 
                     createDropdownAdapter(enumerators);
@@ -580,8 +587,14 @@ public class ControllerActivity extends AppCompatActivity {
 
                     SwitchMaterial formulaSwitch = findViewById(R.id.device_formula_switch);
                     if (formulaSwitch != null) {
+                        TextView deviceIsFormulaUsed = findViewById(R.id.device_is_formula_used);
+                        if (deviceIsFormulaUsed != null) {
+                            deviceIsFormulaUsed.setVisibility(View.GONE);
+                        }
+
+                        formulaSwitch.setVisibility(View.VISIBLE);
                         if (deviceInfo.get("formulaName") == null) {
-                            formulaSwitch.setVisibility(View.INVISIBLE);
+                            formulaSwitch.setEnabled(false);
                         }
 
                         formulaSwitch.setChecked(getLastIsFormulaUsed());
@@ -630,7 +643,7 @@ public class ControllerActivity extends AppCompatActivity {
                                 new CompoundButton.OnCheckedChangeListener() {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                        MaterialButton updateBtn = findViewById(R.id.change_state_bool_btn);
+                                        MaterialButton updateBtn = findViewById(R.id.change_state_btn);
 
                                         if ((getLastState() instanceof Boolean
                                                 && (Boolean) getLastState() != isChecked)) {
@@ -647,10 +660,16 @@ public class ControllerActivity extends AppCompatActivity {
                         );
                     }
 
-                    SwitchMaterial formulaSwitch = findViewById(R.id.device_formula_bool_switch);
+                    SwitchMaterial formulaSwitch = findViewById(R.id.device_formula_switch);
                     if (formulaSwitch != null) {
+                        TextView deviceIsFormulaUsed = findViewById(R.id.device_is_formula_used);
+                        if (deviceIsFormulaUsed != null) {
+                            deviceIsFormulaUsed.setVisibility(View.GONE);
+                        }
+
+                        formulaSwitch.setVisibility(View.VISIBLE);
                         if (deviceInfo.get("formulaName") == null) {
-                            formulaSwitch.setVisibility(View.INVISIBLE);
+                            formulaSwitch.setEnabled(false);
                         }
 
                         formulaSwitch.setChecked(getLastIsFormulaUsed());
@@ -659,7 +678,7 @@ public class ControllerActivity extends AppCompatActivity {
                                 new CompoundButton.OnCheckedChangeListener() {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                        MaterialButton updateBtn = findViewById(R.id.change_state_bool_btn);
+                                        MaterialButton updateBtn = findViewById(R.id.change_state_btn);
 
                                         if (getLastIsFormulaUsed() != isChecked) {
                                             updateBtn.setEnabled(true);
@@ -675,10 +694,10 @@ public class ControllerActivity extends AppCompatActivity {
                         );
                     }
 
-                    MaterialButton materialButton = findViewById(R.id.change_state_bool_btn);
+                    MaterialButton materialButton = findViewById(R.id.change_state_btn);
                     createUpdateOnClickListenerForButton(materialButton);
 
-                    TableRow tableRow = findViewById(R.id.change_state_bool_btn_row);
+                    TableRow tableRow = findViewById(R.id.change_state_btn_row);
                     tableRow.setVisibility(View.VISIBLE);
 
                     tableRow = findViewById(R.id.change_bool_state_row);

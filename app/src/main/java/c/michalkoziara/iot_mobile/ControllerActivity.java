@@ -173,38 +173,6 @@ public class ControllerActivity extends AppCompatActivity {
         if (authToken != null) {
             getExecutiveDevice(authToken, deviceGroupProductKey, executiveDeviceKey);
         }
-
-        //        Map<String, Object> testData = new HashMap<>();
-//        testData.put("state", 1.0);
-//        testData.put("formulaName", "testF");
-//        testData.put("isFormulaUsed", false);
-//
-//        setDeviceInfo(testData);
-//
-//        Map<String, Object> testTypeData = new HashMap<>();
-//        List<String> enumerators = new ArrayList<>();
-//        enumerators.add("test");
-//        enumerators.add("test1");
-//        enumerators.add("test3");
-//        enumerators.add("test3");
-//        enumerators.add("test23");
-//        enumerators.add("test3");
-//        enumerators.add("test3");
-//        enumerators.add("test3");
-//        enumerators.add("test3");
-//        enumerators.add("test3");
-//        enumerators.add("test3");
-//        enumerators.add("test3");
-//        enumerators.add("test3");
-//        enumerators.add("test3");
-//        enumerators.add("test3");
-//        enumerators.add("te11111111111111fffffffwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwfffffffffff11");
-//        enumerators.add("test3");
-//        testTypeData.put("enumerator", enumerators);
-//        testTypeData.put("stateRangeMin", 13);
-//        testTypeData.put("stateRangeMax", 23);
-//        testTypeData.put("stateType", "Decimal");
-//        setTypeInfo(testTypeData);
     }
 
     private String getToken() {

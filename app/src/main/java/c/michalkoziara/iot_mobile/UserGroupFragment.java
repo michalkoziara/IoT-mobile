@@ -18,6 +18,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UserGroupFragment extends ListFragment {
@@ -143,6 +144,7 @@ public class UserGroupFragment extends ListFragment {
     void setUserGroupNames(List<String> userGroupNames) {
         this.userGroupNames.clear();
         this.userGroupNames.addAll(userGroupNames);
+        Collections.sort(userGroupNames, String.CASE_INSENSITIVE_ORDER);
 
         if (adapter != null) {
             adapter.notifyDataSetChanged();
@@ -173,6 +175,7 @@ public class UserGroupFragment extends ListFragment {
     private void populateListView() {
         callback.createUserGroups();
         if (isAdded() && adapter == null) {
+            Collections.sort(userGroupNames, String.CASE_INSENSITIVE_ORDER);
             adapter = new UserGroupAdapter(getContext(), userGroupNames);
             if (selectedPosition != null) {
                 adapter.setSelectedPosition(this.selectedPosition);

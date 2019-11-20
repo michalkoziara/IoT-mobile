@@ -14,6 +14,7 @@ import androidx.fragment.app.ListFragment;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -114,6 +115,7 @@ public class DeviceGroupFragment extends ListFragment {
         this.deviceGroupProductKeyByNames = deviceGroupProductKeyByNames;
         this.deviceGroupNames.clear();
         this.deviceGroupNames.addAll(deviceGroupProductKeyByNames.keySet());
+        Collections.sort(deviceGroupNames, String.CASE_INSENSITIVE_ORDER);
 
         if (adapter != null) {
             adapter.notifyDataSetChanged();
@@ -136,6 +138,7 @@ public class DeviceGroupFragment extends ListFragment {
             if (deviceGroupProductKeyByNames != null) {
                 deviceGroupNames = new ArrayList<>(deviceGroupProductKeyByNames.keySet());
             }
+            Collections.sort(deviceGroupNames, String.CASE_INSENSITIVE_ORDER);
             adapter = new DeviceGroupAdapter(getContext(), deviceGroupNames);
 
             if (selectedPosition != null) {

@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,7 @@ public class SensorFragment extends ListFragment {
         sensorNames.clear();
         if (!this.sensorValuesByNames.isEmpty()) {
             sensorNames.addAll(sensorValuesByNames.keySet());
+            Collections.sort(sensorNames, String.CASE_INSENSITIVE_ORDER);
         }
 
         if (adapter != null) {
@@ -101,6 +103,7 @@ public class SensorFragment extends ListFragment {
     private void populateListView() {
         callback.createSensors();
         if (isAdded() && adapter == null) {
+            Collections.sort(sensorNames, String.CASE_INSENSITIVE_ORDER);
             adapter = new SensorAdapter(getContext(), sensorNames, sensorValuesByNames);
             setListAdapter(adapter);
         }

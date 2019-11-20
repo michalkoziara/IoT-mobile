@@ -663,10 +663,17 @@ public class MainActivity extends AppCompatActivity implements
                         for (int i = 0; i < sensorListJson.length(); i++) {
                             JSONObject sensorInfoJson = sensorListJson.getJSONObject(i);
 
-                            sensorValuesByNames.put(
-                                    sensorInfoJson.getString("name"),
-                                    sensorInfoJson.getString("sensorReadingValue")
-                            );
+                            if (!sensorInfoJson.getBoolean("isActive")) {
+                                sensorValuesByNames.put(
+                                        sensorInfoJson.getString("name"),
+                                        getString(R.string.sensor_not_active)
+                                );
+                            } else {
+                                sensorValuesByNames.put(
+                                        sensorInfoJson.getString("name"),
+                                        sensorInfoJson.getString("sensorReadingValue")
+                                );
+                            }
                         }
                     } catch (JSONException e) {
                         displaySnackbar(getString(R.string.main_menu_load_failed_message));

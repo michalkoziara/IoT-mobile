@@ -13,6 +13,7 @@ import androidx.fragment.app.ListFragment;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -79,6 +80,7 @@ public class ExecutiveDeviceFragment extends ListFragment {
         this.executiveDeviceKeyByNames = executiveDeviceKeyByNames;
         this.executiveDeviceNames.clear();
         this.executiveDeviceNames.addAll(executiveDeviceKeyByNames.keySet());
+        Collections.sort(executiveDeviceNames, String.CASE_INSENSITIVE_ORDER);
 
         if (adapter != null) {
             adapter.notifyDataSetChanged();
@@ -95,6 +97,7 @@ public class ExecutiveDeviceFragment extends ListFragment {
             if (executiveDeviceKeyByNames != null) {
                 executiveDeviceNames = new ArrayList<>(executiveDeviceKeyByNames.keySet());
             }
+            Collections.sort(executiveDeviceNames, String.CASE_INSENSITIVE_ORDER);
             adapter = new ExecutiveDeviceAdapter(getContext(), executiveDeviceNames);
 
             setListAdapter(adapter);

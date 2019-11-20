@@ -32,7 +32,7 @@
     <string name="executive_device_tab_item">Urządzenia wykonawcze"</string>
     <string name="sensor_tab_item">Czujniki"</string>
 
-    <string name="sensor_not_active">Nie aktywny</string>
+    <string name="sensor_not_active">Nieaktywny</string>
 
     <string name="main_menu_login_failed_message">Wystąpił błąd, proszę zalogować się ponownie</string>
     <string name="main_menu_load_failed_message">Wystąpił błąd, proszę odświeżyć dane</string>

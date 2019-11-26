@@ -543,9 +543,11 @@ public class MainActivity extends AppCompatActivity implements
                     } else {
                         List<String> userGroupNames = new ArrayList<>();
                         try {
-                            JSONArray userGroupListJson = new JSONArray(output);
+                            JSONObject userGroupsObject = new JSONObject(output);
+                            JSONArray userGroupListJson = userGroupsObject.getJSONArray("userGroups");
                             for (int i = 0; i < userGroupListJson.length(); i++) {
-                                userGroupNames.add(userGroupListJson.getString(i));
+                                JSONObject userGroupInfoJson = userGroupListJson.getJSONObject(i);
+                                userGroupNames.add(userGroupInfoJson.getString("name"));
                             }
                         } catch (JSONException e) {
                             displaySnackbar(getString(R.string.main_menu_load_failed_message));
